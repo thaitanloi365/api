@@ -64,7 +64,7 @@ npm-debug.log
 testem.log
 /typings
 .tmp
-# .env
+.env
 .swp
 
 # e2e
