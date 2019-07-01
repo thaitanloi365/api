@@ -9,7 +9,9 @@
     "build": "yarn run clean && yarn run build-babel ",
     "prod": "NODE_ENV=production babel-node ./dist/App.js ",
     "start": "yarn build && yarn prod",
-    "dev": "nodemon --harmony ./src/App.js --exec babel-node"
+    "dev": "nodemon --harmony ./src/App.js --exec babel-node",
+    "doc": "apidoc -i ./src/Docs -o ./public/docs && open ./public/docs/index.html",
+    "heroku": "git push heroku master"
   },
   "engines": {
     "node": ">= 10.x"
