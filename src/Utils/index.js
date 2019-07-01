@@ -1,2 +1,2 @@
-export { default as Utils } from "./utils";
-export { default as Mailer } from "./mailer";
+export { default as Utils } from "./Utils";
+export { default as Mailer } from "./Mailer";
