@@ -1,3 +1,3 @@
-import Strings from "./strings.en";
+import Strings from "./Strings.en";
 
 export default Strings;
