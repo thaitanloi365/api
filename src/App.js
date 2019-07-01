@@ -1,7 +1,7 @@
 import "./Enviroment/env";
 import express from "express";
 
-import { Database, Middleware, Port } from "@Config";
+import { Database, Middleware, Port, Swagger } from "@Config";
 import Routes from "@Routes";
 
 const app = express();
@@ -14,10 +14,6 @@ Routes.setup(app);
 
 Port.setup(app);
 
-// app.use("/", (req, res) => {
-//   res.writeHead(200, { "Content-Type": "text/plain" });
-//   res.write("Home page");
-//   res.end();
-// });
+Swagger.setup(app);
 
 export default app;

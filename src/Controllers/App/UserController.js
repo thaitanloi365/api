@@ -249,7 +249,7 @@ const resetPassword = async (req, res, next) => {
  * Add a device for push notification
  * @type {import("@types").RequestHandler}
  */
-const updateDevice = async (req, res, next) => {
+const addDevice = async (req, res, next) => {
   try {
     if (!req.body.device) {
       Utils.handleError(res)(Strings.DEVICE_REQUIRED);
@@ -297,24 +297,14 @@ const updateDevice = async (req, res, next) => {
  */
 const deleteDevice = async (req, res, next) => {
   try {
-    if (!req.body.uuid) {
-      Utils.handleError(res)(Strings.DEVICE_UUID_TOKEN_REQUIRED);
-      return;
-    }
-
-    const user = await User.findById(req.user._id);
+    let user = await User.findById(req.user._id);
 
     if (!user) {
       Utils.handleError(res)(Strings.USER_NOT_FOUND, 404);
       return;
     }
 
-    const index = user.devices.findIndex(device => device.uuid === req.body.uuid);
-
-    if (index !== -1) {
-      user.devices.splice(index, 1);
-    }
-
+    user.devices = [];
     await user.save();
     Utils.handleSuccess(res)(Strings.DEVICE_DELETE_SUCCESS);
   } catch (err) {
@@ -331,6 +321,6 @@ export default {
   forgotPassword,
   resetToken,
   resetPassword,
-  updateDevice,
+  addDevice,
   deleteDevice
 };

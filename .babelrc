@@ -14,7 +14,8 @@
           "@Config": ["./src/Config"],
           "@Auth": ["./src/Auth"],
           "@AWS": ["./src/AWS"],
-          "@Strings": ["./src/Strings"]
+          "@Strings": ["./src/Strings"],
+          "@Docs": ["./src/Docs/doc.json"]
         }
       }
     ]

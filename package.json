@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf dist && mkdir dist",
-    "build-babel": "babel -d ./dist ./src -s",
+    "build-babel": "babel -d ./dist ./src -s  && cp -r ./src/Docs ./dist",
     "build": "yarn run clean && yarn run build-babel ",
     "prod": "NODE_ENV=production  babel-node ./dist/App.js ",
     "start": "yarn build && yarn prod",
@@ -36,6 +36,7 @@
     "nodemailer-mailgun-transport": "^1.4.0",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
+    "swagger-ui-express": "^4.0.6",
     "validator": "^11.0.0"
   },
   "devDependencies": {

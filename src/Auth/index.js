@@ -7,7 +7,7 @@ import Strings from "@Strings";
 
 const router = Router();
 
-router.use("/login", local.router);
+router.use("/", local.router);
 
 /**
  * @type {import("@types").IUserModel}

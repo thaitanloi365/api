@@ -19,12 +19,12 @@ function setup(app) {
    * Attach Auth module
    */
   Auth.setUser(User);
-  app.use("/api/auth", Auth.router);
+  app.use("/api", Auth.router);
 
   /**
    * Attach AWS signature endpoint
    */
-  app.use("/api/aws", AWS.router);
+  app.use("/api", AWS.router);
 
   /**
    * Validation errors

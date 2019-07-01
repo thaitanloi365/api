@@ -6,6 +6,7 @@
   "noEmit": true,
   "strict": true,
   "compilerOptions": {
+    "resolveJsonModule": true,
     "noUnusedParameters": true,
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
@@ -16,7 +17,7 @@
     "sourceMap": true,
     "baseUrl": ".",
     "paths": {
-      "@Controllers": ["src/Controllers"],
+      "@Controllers/*": ["src/Controllers/*"],
       "@Views/*": ["src/Views/*"],
       "@Models": ["src/Models"],
       "@Routes": ["src/Routes"],
@@ -24,7 +25,8 @@
       "@Config": ["src/Config"],
       "@Auth": ["src/Auth"],
       "@AWS": ["src/AWS"],
-      "@Strings": ["src/Strings"]
+      "@Strings": ["src/Strings"],
+      "@Docs": ["src/Docs/doc.json"]
     }
   }
 }

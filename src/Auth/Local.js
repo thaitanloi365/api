@@ -29,7 +29,8 @@ function setUser(User) {
       }
     })
   );
-  router.post("/", _authenticate);
+  router.post("/login", _authenticate);
+  router.delete("/logout", _logout);
 }
 
 function _authenticate(req, res, next) {
@@ -46,6 +47,12 @@ function _authenticate(req, res, next) {
     const token = signToken(user._id);
     Utils.handleSuccess(res)("Login successfully", { token });
   })(req, res, next);
+}
+
+function _logout(req, res, next) {
+  console.log("req.user", req.user);
+  req.logout();
+  Utils.handleSuccess(res)("Logout successfully");
 }
 
 export default {
