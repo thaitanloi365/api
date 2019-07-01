@@ -1,0 +1,22 @@
+{
+  "presets": ["env"],
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "root": ["./src"],
+        "alias": {
+          "@Controllers": ["./src/Controllers"],
+          "@Views/*": ["./src/Views/*"],
+          "@Models": ["./src/Models"],
+          "@Routes": ["./src/Routes"],
+          "@Utils": ["./src/Utils"],
+          "@Config": ["./src/Config"],
+          "@Auth": ["./src/Auth"],
+          "@AWS": ["./src/AWS"],
+          "@Strings": ["./src/Strings"]
+        }
+      }
+    ]
+  ]
+}

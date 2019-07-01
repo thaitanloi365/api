@@ -1,0 +1,30 @@
+{
+  "allowJs": true,
+  "allowSyntheticDefaultImports": true,
+  "esModuleInterop": true,
+  "moduleResolution": "node",
+  "noEmit": true,
+  "strict": true,
+  "compilerOptions": {
+    "noUnusedParameters": true,
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    "removeComments": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": false,
+    "checkJs": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@Controllers": ["src/Controllers"],
+      "@Views/*": ["src/Views/*"],
+      "@Models": ["src/Models"],
+      "@Routes": ["src/Routes"],
+      "@Utils": ["src/Utils"],
+      "@Config": ["src/Config"],
+      "@Auth": ["src/Auth"],
+      "@AWS": ["src/AWS"],
+      "@Strings": ["src/Strings"]
+    }
+  }
+}
