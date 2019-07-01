@@ -12,7 +12,7 @@
   "basePath": "/api",
   "tags": [
     {
-      "name": "user",
+      "name": "User",
       "description": "Operations about user"
     }
   ],
@@ -20,7 +20,7 @@
   "paths": {
     "/login": {
       "post": {
-        "tags": ["user"],
+        "tags": ["User"],
         "summary": "Login",
         "description": "Logs user into the system",
         "operationId": "",
@@ -39,7 +39,7 @@
         ],
         "responses": {
           "200": {
-            "description": "successful operation"
+            "description": "Success"
           },
           "422": {
             "description": "Invalid email/password supplied"
@@ -49,7 +49,7 @@
     },
     "/logout": {
       "delete": {
-        "tags": ["user"],
+        "tags": ["User"],
         "summary": "Logout",
         "description": "Logs out current logged in user session",
         "operationId": "",
@@ -64,15 +64,18 @@
           }
         ],
         "responses": {
-          "422": {
-            "description": "Invalid input"
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "No authorization token was found"
           }
         }
       }
     },
     "/user": {
       "post": {
-        "tags": ["user"],
+        "tags": ["User"],
         "summary": "Create user",
         "description": "This can only be done by the logged in user.",
         "operationId": "createUser",
@@ -89,14 +92,17 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": "successful operation"
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "No authorization token was found"
           }
         }
       },
 
       "patch": {
-        "tags": ["user"],
+        "tags": ["User"],
         "summary": "Update user",
         "description": "This can only be done by the logged in user.",
         "operationId": "createUser",
@@ -119,15 +125,18 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": "successful operation"
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "No authorization token was found"
           }
         }
       }
     },
     "/changePassword": {
       "patch": {
-        "tags": ["user"],
+        "tags": ["User"],
         "summary": "Change password",
         "description": "Changes password",
         "operationId": "",
@@ -151,6 +160,12 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "No authorization token was found"
+          },
           "422": {
             "description": "Invalid input"
           }
@@ -159,7 +174,7 @@
     },
     "/forgotPassword": {
       "post": {
-        "tags": ["user"],
+        "tags": ["User"],
         "summary": "Forgot password",
         "description": "Forgot password",
         "operationId": "",
@@ -176,6 +191,12 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "No authorization token was found"
+          },
           "422": {
             "description": "Invalid input"
           }
@@ -184,7 +205,7 @@
     },
     "/device": {
       "post": {
-        "tags": ["user"],
+        "tags": ["User"],
         "summary": "Add device",
         "description": "Add a new device push notification",
         "operationId": "",
@@ -208,13 +229,19 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "No authorization token was found"
+          },
           "422": {
             "description": "Invalid input"
           }
         }
       },
       "delete": {
-        "tags": ["user"],
+        "tags": ["User"],
         "summary": "Delete device",
         "description": "Delete current device push notification when user logged out.",
         "operationId": "",
@@ -229,6 +256,12 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "No authorization token was found"
+          },
           "422": {
             "description": "Invalid input"
           }
