@@ -78,6 +78,29 @@
       }
     },
     "/user": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get user's information",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "createUser",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "access_token",
+            "in": "header",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "No authorization token was found"
+          }
+        }
+      },
       "post": {
         "tags": ["User"],
         "summary": "Create user",
@@ -104,7 +127,6 @@
           }
         }
       },
-
       "patch": {
         "tags": ["User"],
         "summary": "Update user",
@@ -138,14 +160,22 @@
         }
       }
     },
+
     "/item": {
       "post": {
+        "security": ["Bearer"],
         "tags": ["Item"],
         "summary": "Create a new item",
         "description": "This can only be done by the logged in user.",
         "operationId": "createItem",
         "produces": ["application/json"],
         "parameters": [
+          {
+            "name": "access_token",
+            "in": "header",
+            "required": true,
+            "type": "string"
+          },
           {
             "in": "body",
             "name": "body",
@@ -188,6 +218,58 @@
         "responses": {
           "default": {
             "description": "successful operation"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Item"],
+        "summary": "Delete item",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "deleteItem",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "access_token",
+            "in": "header",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Item",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Item"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "successful operation"
+          }
+        }
+      }
+    },
+    "/user/items": {
+      "get": {
+        "security": ["Bearer"],
+        "tags": ["User"],
+        "summary": "Get all item",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "createItem",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "access_token",
+            "in": "header",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
           }
         }
       }
@@ -328,18 +410,8 @@
     }
   },
   "securityDefinitions": {
-    "petstore_auth": {
-      "type": "oauth2",
-      "authorizationUrl": "http://petstore.swagger.io/oauth/dialog",
-      "flow": "implicit",
-      "scopes": {
-        "write:pets": "modify pets in your account",
-        "read:pets": "read your pets"
-      }
-    },
-    "api_key": {
-      "type": "apiKey",
-      "name": "api_key",
+    "Bearer": {
+      "name": "Authorization",
       "in": "header"
     }
   },
@@ -414,6 +486,23 @@
         "uuid": {
           "type": "string",
           "example": "1111111"
+        }
+      }
+    },
+    "Item": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "Coffee"
+        },
+        "description": {
+          "type": "string",
+          "example": "This is my item"
+        },
+        "price": {
+          "type": "number",
+          "example": "1000"
         }
       }
     }

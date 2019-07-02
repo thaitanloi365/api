@@ -1,5 +1,5 @@
 import { Utils, Mailer } from "@Utils";
-import { User } from "@Models";
+import { User, Item } from "@Models";
 import Auth from "@Auth";
 import _ from "lodash";
 import Strings from "@Strings";
@@ -8,6 +8,7 @@ const WHITELIST_REQUEST_ATTRIBUTES = ["firstName", "lastName", "password", "emai
 
 const WHITELIST_RESPONSE_ATTRIBUTES = ["firstName", "lastName", "email"];
 
+const ITEM_WHITELIST_ATTRIBUTES = ["price", "description", "title"];
 /**
  * Create a new authenticate user
  *
@@ -312,6 +313,39 @@ const deleteDevice = async (req, res, next) => {
   }
 };
 
+/**
+ * Add a device for push notification
+ * @type {import("@types").RequestHandler}
+ */
+const getAllItem = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return Utils.handleError(res)(Strings.USER_NOT_FOUND, 404);
+    }
+
+    const limit = Number(req.query.limit) || 100;
+    const skip = Number(req.query.skip) || 0;
+    const query = {
+      _createdBy: req.user._id
+    };
+    const sort = req.query.sort || "-createdAt";
+    const select = ITEM_WHITELIST_ATTRIBUTES.join(" ");
+
+    const items = await Item.find(query)
+      .select(select)
+      .skip(skip)
+      .limit(limit)
+      .sort(sort)
+      .lean();
+
+    Utils.handleSuccess(res)(Strings.SUCCESS, items);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export default {
   create,
   update,
@@ -322,5 +356,6 @@ export default {
   resetToken,
   resetPassword,
   addDevice,
-  deleteDevice
+  deleteDevice,
+  getAllItem
 };

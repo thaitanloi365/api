@@ -34,6 +34,7 @@ declare module "@types" {
     resetPasswordToken: string;
     resetPasswordExpires: Date;
     devices: Array<{ token: string; uuid: string; platform: string }>;
+    items: Array;
   }
 
   export interface IUser extends IUserDocument {

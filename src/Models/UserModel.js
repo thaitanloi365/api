@@ -12,8 +12,7 @@ const UserSchema = new Schema(
     salt: String,
     resetPasswordToken: String,
     resetPasswordExpires: Date,
-    devices: Array,
-    items: [{ type: Schema.Types.ObjectId, path: "Item" }]
+    devices: Array
   },
   { timestamps: true, autoIndex: true }
 );

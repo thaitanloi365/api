@@ -5,10 +5,12 @@ const Schema = mongoose.Schema;
 const ItemSchema = new Schema(
   {
     title: { type: String, required: true },
+    price: { type: String, required: true },
+    description: { type: String },
     photos: Array,
     _createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true }
   },
-  { autoIndex: true }
+  { autoIndex: true, timestamps: true }
 );
 
 /**
