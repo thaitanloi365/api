@@ -9,16 +9,6 @@ declare module "@types" {
   export type Response = Response;
   export type NextFunction = NextFunction;
 
-  // export type ErrorNames =
-  //   | "INTERNAL_SERVER_ERROR"
-  //   | "USER_NOT_FOUND"
-  //   | "EMAIL_ALREADY_EXITS"
-  //   | "EMAIL_INVALID"
-  //   | "CREATE_ACCOUNT_SUCCESS"
-  //   | "UPDATE_ACCOUNT_SUCCESS";
-
-  // export type Errors = { [key in ErrorNames]: string };
-
   /**
    * Mailer model
    */
@@ -31,10 +21,10 @@ declare module "@types" {
   }>;
 
   export type MailerSendData = Partial<{ baseUrl: string; user: any }>;
+
   /**
    * User model
    * */
-
   export interface IUserDocument extends Document {
     firstName: string;
     lastName: string;
@@ -60,6 +50,28 @@ declare module "@types" {
   }
 
   export interface IUserModel extends Model<IUser> {
+    /**
+     * Handle login
+     */
+  }
+
+  /**
+   * Thread model
+   */
+  export interface IItemDocument extends Document {
+    title: string;
+    description: stirng;
+    price: number;
+    _createdBy: IUser;
+  }
+
+  export interface IItem extends IUserDocument {
+    /**
+     * Helper
+     */
+  }
+
+  export interface IItemModel extends Model<IItem> {
     /**
      * Handle login
      */

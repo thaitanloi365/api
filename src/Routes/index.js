@@ -1,5 +1,7 @@
 import { User } from "@Models";
 import UserRoutes from "./App/UserRoutes";
+import ItemRoutes from "./App/ItemRoutes";
+
 import Auth from "@Auth";
 import AWS from "@AWS";
 
@@ -8,6 +10,7 @@ function setup(app) {
    * Attach routes
    */
   app.use("/api/user", UserRoutes);
+  app.use("/api/item", ItemRoutes);
 
   /**
    * Attach Admin portal module
