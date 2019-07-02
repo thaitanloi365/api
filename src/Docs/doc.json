@@ -43,7 +43,7 @@
         ],
         "responses": {
           "200": {
-            "description": "successful operation"
+            "description": "Success"
           },
           "422": {
             "description": "Invalid email/password supplied"
@@ -68,8 +68,11 @@
           }
         ],
         "responses": {
-          "422": {
-            "description": "Invalid input"
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "No authorization token was found"
           }
         }
       }
@@ -93,8 +96,11 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": "successful operation"
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "No authorization token was found"
           }
         }
       },
@@ -123,8 +129,11 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": "successful operation"
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "No authorization token was found"
           }
         }
       }
@@ -209,6 +218,12 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "No authorization token was found"
+          },
           "422": {
             "description": "Invalid input"
           }
@@ -234,6 +249,12 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "No authorization token was found"
+          },
           "422": {
             "description": "Invalid input"
           }
@@ -266,6 +287,12 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "No authorization token was found"
+          },
           "422": {
             "description": "Invalid input"
           }
@@ -287,6 +314,12 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "No authorization token was found"
+          },
           "422": {
             "description": "Invalid input"
           }
