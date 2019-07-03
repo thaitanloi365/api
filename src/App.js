@@ -16,4 +16,8 @@ Port.setup(app);
 
 Swagger.setup(app);
 
+app.use("/", function(req, res, next) {
+  res.write("Home Page");
+  res.end();
+});
 export default app;
