@@ -1,14 +1,15 @@
 declare module "@types" {
-  import { Document, Model, HookSyncCallback } from "mongoose";
-  import { RequestHandler, Response, NextFunction, ErrorRequestHandler } from "express";
+  import { Document, Model, HookSyncCallback, QueryPopulateOptions, ModelPopulateOptions } from "mongoose";
+  import { RequestHandler, Response, NextFunction, ErrorRequestHandler, Request } from "express";
   /**
    * Common
    */
   export type ErrorRequestHandler = ErrorRequestHandler;
   export type RequestHandler = RequestHandler;
   export type Response = Response;
+  export type Request = Request;
   export type NextFunction = NextFunction;
-
+  export type Populate = QueryPopulateOptions | QueryPopulateOptions[];
   /**
    * Mailer model
    */

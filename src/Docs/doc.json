@@ -161,7 +161,7 @@
       }
     },
 
-    "/item": {
+    "/items": {
       "post": {
         "security": ["Bearer"],
         "tags": ["Item"],
@@ -247,6 +247,27 @@
         "responses": {
           "default": {
             "description": "successful operation"
+          }
+        }
+      },
+      "get": {
+        "security": ["Bearer"],
+        "tags": ["Item"],
+        "summary": "Get all item",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "createItem",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "access_token",
+            "in": "header",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
           }
         }
       }

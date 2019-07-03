@@ -1,4 +1,4 @@
-import { Utils } from "@Utils";
+import { Utils, Paging } from "@Utils";
 import { Item, User } from "@Models";
 import Strings from "@Strings";
 import _ from "lodash";
@@ -7,7 +7,8 @@ const WHITELIST_REQUEST_ATTRIBUTES = ["title", "price", "description"];
 
 const WHITELIST_RESPONSE_ATTRIBUTES = ["id", "title", "price", "description"];
 
-const ITEM_SELECT_ATTRIBUTES = "photos title price description -_id";
+const ITEM_SELECT_ATTRIBUTES = "-_createBy -_id -__v";
+
 /**
  * Create a new item
  *
@@ -84,21 +85,44 @@ const destroy = async (req, res, next) => {
  */
 const get = async (req, res, next) => {
   try {
-    const limit = Number(req.query.limit) || 20;
-    const skip = Number(req.query.skip) || 0;
-    const sort = req.query.sort || "-createdAt";
+    const _id = req.params.id;
+    const _createdBy = req.user._id;
 
-    const query = {
-      _createdBy: req.user._id
-    };
-    const items = await Item.find(query)
-      .select(ITEM_SELECT_ATTRIBUTES)
-      .sort(sort)
-      .skip(skip)
-      .limit(limit)
-      .populate({ path: "_createdBy", select: WHITELIST_RESPONSE_ATTRIBUTES });
+    const item = await Item.findOne({ _id, _createdBy });
 
-    console.log("items", items);
+    // const query = {
+    //   _createdBy: req.user._id
+    // };
+    // const items = await Item.find(query)
+    //   .select(ITEM_SELECT_ATTRIBUTES)
+    //   .sort(sort)
+    //   .skip(skip)
+    //   .limit(limit)
+    //   .populate({ path: "_createdBy", select: WHITELIST_RESPONSE_ATTRIBUTES });
+
+    console.log("item", item);
+  } catch (err) {
+    next(err);
+  }
+};
+
+/**
+ * Get all item
+ *
+ * @type {import("@types").RequestHandler}
+ */
+const all = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return Utils.handleError(res)(Strings.USER_NOT_FOUND);
+    }
+
+    await user.populate({ path: "items", options: Paging.options(req), select: ITEM_SELECT_ATTRIBUTES });
+
+    console.log("***8  2items", user.items);
+
+    console.log("asdfasdfasdfasd", req.user);
   } catch (err) {
     next(err);
   }
@@ -108,5 +132,6 @@ export default {
   create,
   edit,
   destroy,
-  get
+  get,
+  all
 };

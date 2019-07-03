@@ -8,7 +8,6 @@ import methodOverride from "method-override";
 
 function setup(app) {
   mongoose.Promise = bluebird;
-
   app.use(cors());
   app.use(compression());
   app.use(bodyParser.json());

@@ -50,94 +50,107 @@ UserSchema.pre("save", function(next) {
 });
 
 /**
+ * Virtual
+ */
+UserSchema.virtual("items", {
+  ref: "Item",
+  localField: "_id",
+  foreignField: "_createdBy"
+});
+
+/**
  * Methods
  */
-UserSchema.methods = {
-  /**
-   * @param {any} email
-   */
-  isEmailExits(email) {
-    return email == this.email;
-  },
 
-  /**
-   * @param {string} password
-   * @param {(err: Error,isAuthenticated?: boolean) => void} callback
-   */
-  authenticate(password) {
-    return new Promise((resolve, reject) => {
-      this.encryptPassword(password)
-        .then(encryptPassword => {
-          resolve(encryptPassword === this.password);
-        })
-        .catch(error => {
-          reject(error);
-        });
-    });
-  },
+/**
+ * Check email exits
+ * @param {string} email
+ */
+UserSchema.methods.isEmailExits = function(email) {
+  return email == this.email;
+};
 
-  /**
-   * @param {(error: Error, resetToken?: string) => void} callback(err,resetToken)
-   */
-  generateResetToken(callback) {
-    crypto.randomBytes(16, (err, salt) => {
+/**
+ * Authenticate user
+ * @param {string} password
+ * @return {Promise<boolean>}
+ */
+UserSchema.methods.authenticate = function(password) {
+  return new Promise((resolve, reject) => {
+    this.encryptPassword(password)
+      .then(encryptPassword => {
+        resolve(encryptPassword === this.password);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+};
+
+/**
+ * Generate reset token for reset password
+ * @param {(error: Error, resetToken?: string) => void} callback(err,resetToken)
+ */
+UserSchema.methods.generateResetToken = function(callback) {
+  crypto.randomBytes(16, (err, salt) => {
+    if (err) {
+      callback(err);
+    }
+    callback(null, salt.toString("hex"));
+  });
+};
+
+/**
+ * @returns {Promise<import("@types").IUserDocument>}
+ */
+UserSchema.methods.saveResetToken = function() {
+  return new Promise((resolve, reject) => {
+    this.generateResetToken((err, resetToken) => {
       if (err) {
-        callback(err);
+        reject(err);
       }
-      callback(null, salt.toString("hex"));
+      this.resetPasswordToken = resetToken;
+      this.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+      resolve(this.save());
     });
-  },
-  /**
-   * @returns {Promise<import("@types").IUserDocument>}
-   */
-  saveResetToken() {
-    return new Promise((resolve, reject) => {
-      this.generateResetToken((err, resetToken) => {
-        if (err) {
-          reject(err);
-        }
-        this.resetPasswordToken = resetToken;
-        this.resetPasswordExpires = Date.now() + 3600000; // 1 hour
-        resolve(this.save());
-      });
-    });
-  },
-  /**
-   * Generate a salt string
-   * @return {Promise<string>}
-   */
-  generateSalt() {
-    return new Promise((resolve, reject) => {
-      const byteSize = 16;
-      crypto.randomBytes(byteSize, (err, salt) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(salt.toString("base64"));
-      });
-    });
-  },
-  /**
-   * Encrypt a password
-   * @param  {string} password un-encrypt password
-   * @return {Promise<string>}
-   */
-  encryptPassword(password) {
-    return new Promise((resolve, reject) => {
-      const salt = this.salt;
-      const defaultIterations = 10000;
-      const defaultKeyLength = 64;
-      const saltBase64 = Buffer.from(salt, "base64");
-      const digest = "sha512";
+  });
+};
 
-      crypto.pbkdf2(password, saltBase64, defaultIterations, defaultKeyLength, digest, (err, key) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(key.toString("base64"));
-      });
+/**
+ * Generate a salt string
+ * @return {Promise<string>}
+ */
+UserSchema.methods.generateSalt = function() {
+  return new Promise((resolve, reject) => {
+    const byteSize = 16;
+    crypto.randomBytes(byteSize, (err, salt) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(salt.toString("base64"));
     });
-  }
+  });
+};
+/**
+ * Encrypt a password
+ * @param  {string} password un-encrypt password
+ * @return {Promise<string>}
+ */
+UserSchema.methods.encryptPassword = function(password) {
+  return new Promise((resolve, reject) => {
+    const salt = this.salt;
+    const defaultIterations = 10000;
+    const defaultKeyLength = 64;
+    const saltBase64 = Buffer.from(salt, "base64");
+    const digest = "sha512";
+
+    crypto.pbkdf2(password, saltBase64, defaultIterations, defaultKeyLength, digest, (err, key) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(key.toString("base64"));
+    });
+  });
 };
 
 /**

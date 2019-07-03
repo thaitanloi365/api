@@ -10,7 +10,7 @@ function setup(app) {
    * Attach routes
    */
   app.use("/api/user", UserRoutes);
-  app.use("/api/item", ItemRoutes);
+  app.use("/api/items", ItemRoutes);
 
   /**
    * Attach Admin portal module
