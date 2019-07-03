@@ -5,35 +5,28 @@ import _ from "lodash";
 
 const WHITELIST_REQUEST_ATTRIBUTES = ["title", "price", "description"];
 
-const WHITELIST_RESPONSE_ATTRIBUTES = ["id", "title", "price", "description"];
-
-const ITEM_SELECT_ATTRIBUTES = "-_createBy -_id -__v";
+const ITEM_SELECT_ATTRIBUTES = "-__v -_createdBy";
 
 /**
  * Create a new item
  *
- * @type {import("@types").RequestHandler}
+ * @type {import("@Types").RequestHandler}
  */
 const create = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id);
     if (!user) {
-      return Utils.handleError(res)(Strings.USER_NOT_FOUND, 404);
+      return Utils.handleError(res, Strings.USER_NOT_FOUND, 404);
     }
 
     const body = Utils.sanitizeObject(req.body, WHITELIST_REQUEST_ATTRIBUTES);
 
-    let newItem = {
-      _createdBy: user._id
-    };
+    const newItem = { _createdBy: user._id };
     _.assign(newItem, body);
 
-    let item = await Item.create(newItem);
+    const item = await Item.create(newItem);
 
-    let response = Utils.sanitizeObject(item, WHITELIST_RESPONSE_ATTRIBUTES);
-    response.id = item.id;
-
-    Utils.handleSuccess(res)(Strings.CREATE_ITEM_SUCCESS, response);
+    Utils.handleSuccess(res, Strings.CREATE_ITEM_SUCCESS, item.toJSON());
   } catch (err) {
     next(err);
   }
@@ -42,18 +35,26 @@ const create = async (req, res, next) => {
 /**
  * Edit item
  *
- * @type {import("@types").RequestHandler}
+ * @type {import("@Types").RequestHandler}
  */
 const edit = async (req, res, next) => {
   try {
-    const user = User.findById(req.user._id);
-    if (!user) {
+    const _id = req.params.id;
+    const _createdBy = req.user._id;
+
+    const item = await Item.findOne({ _id, _createdBy });
+    if (!item) {
+      return Utils.handleError(res, Strings.ITEM_NOT_FOUND, 404);
     }
 
-    const reqBody = Utils.sanitizeObject(req.body);
-    const item = await Item.create(req);
-    const response = Utils.sanitizeObject(item, WHITELIST_RESPONSE_ATTRIBUTES);
-    Utils.handleSuccess(res)(Strings.CREATE_ITEM_SUCCESS, response);
+    const body = Utils.sanitizeObject(req.body, WHITELIST_REQUEST_ATTRIBUTES);
+
+    _.assign(item, body);
+
+    await item.save();
+    item.toJSON();
+
+    Utils.handleSuccess(res, Strings.EDIT_ITEM_SUCCESS, { item });
   } catch (err) {
     next(err);
   }
@@ -62,17 +63,18 @@ const edit = async (req, res, next) => {
 /**
  * Destroy a item
  *
- * @type {import("@types").RequestHandler}
+ * @type {import("@Types").RequestHandler}
  */
 const destroy = async (req, res, next) => {
   try {
-    const user = User.findById(req.user._id);
-    if (!user) {
+    const _id = req.params.id;
+    const _createdBy = req.user._id;
+
+    const item = await Item.findByIdAndDelete({ _id, _createdBy });
+    if (!item) {
+      return Utils.handleError(res, Strings.ITEM_NOT_FOUND, 404);
     }
-    const reqBody = Utils.sanitizeObject(req.body);
-    const item = await Item.create(req);
-    const response = Utils.sanitizeObject(item, WHITELIST_RESPONSE_ATTRIBUTES);
-    Utils.handleSuccess(res)(Strings.CREATE_ITEM_SUCCESS, response);
+    Utils.handleSuccess(res, Strings.DELETE_ITEM_SUCCESS);
   } catch (err) {
     next(err);
   }
@@ -81,7 +83,7 @@ const destroy = async (req, res, next) => {
 /**
  * Get a item
  *
- * @type {import("@types").RequestHandler}
+ * @type {import("@Types").RequestHandler}
  */
 const get = async (req, res, next) => {
   try {
@@ -90,17 +92,10 @@ const get = async (req, res, next) => {
 
     const item = await Item.findOne({ _id, _createdBy });
 
-    // const query = {
-    //   _createdBy: req.user._id
-    // };
-    // const items = await Item.find(query)
-    //   .select(ITEM_SELECT_ATTRIBUTES)
-    //   .sort(sort)
-    //   .skip(skip)
-    //   .limit(limit)
-    //   .populate({ path: "_createdBy", select: WHITELIST_RESPONSE_ATTRIBUTES });
-
-    console.log("item", item);
+    if (!item) {
+      return Utils.handleError(res, Strings.ITEM_NOT_FOUND, 404);
+    }
+    Utils.handleSuccess(res, "Success", { item });
   } catch (err) {
     next(err);
   }
@@ -109,20 +104,20 @@ const get = async (req, res, next) => {
 /**
  * Get all item
  *
- * @type {import("@types").RequestHandler}
+ * @type {import("@Types").RequestHandler}
  */
 const all = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id);
     if (!user) {
-      return Utils.handleError(res)(Strings.USER_NOT_FOUND);
+      return Utils.handleError(res, Strings.USER_NOT_FOUND, 404);
     }
+    const _createdBy = req.user._id;
 
-    await user.populate({ path: "items", options: Paging.options(req), select: ITEM_SELECT_ATTRIBUTES });
+    const options = Paging.options(req, [], ITEM_SELECT_ATTRIBUTES);
 
-    console.log("***8  2items", user.items);
-
-    console.log("asdfasdfasdfasd", req.user);
+    const items = await Item.find({ _createdBy }).setOptions(options);
+    Utils.handleSuccess(res, "Success", { items });
   } catch (err) {
     next(err);
   }

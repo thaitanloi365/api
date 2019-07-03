@@ -7,7 +7,7 @@ import fs from "fs";
 
 export default class Mailer {
   /**
-   * @param {import("@types").MailerOptions} mailOptions
+   * @param {import("@Types").MailerOptions} mailOptions
    */
   constructor(mailOptions) {
     this.options = { auth: { api_key: process.env.MAILGUN_KEY, domain: process.env.MAILGUN_DOMAIN } };
@@ -21,7 +21,7 @@ export default class Mailer {
   }
 
   /**
-   * @param {import("@types").MailerSendData} data
+   * @param {import("@Types").MailerSendData} data
    */
   sendMail(data = null) {
     if (this.mailOptions.html) {

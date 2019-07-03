@@ -7,7 +7,7 @@ import { Utils } from "@Utils";
 const router = Router();
 
 /**
- * @param {import("@types").IUserModel} User
+ * @param {import("@Types").IUserModel} User
  */
 function setUser(User) {
   const options = { usernameField: "email", passwordField: "password" };
@@ -37,22 +37,22 @@ function _authenticate(req, res, next) {
   passport.authenticate("local", function(err, user, info) {
     const error = err || info;
     if (error) {
-      return Utils.handleError(res)(error.message);
+      return Utils.handleError(res, error.message);
     }
 
     if (!user) {
-      return Utils.handleError(res)("Something went wrong, please try again.", 404);
+      return Utils.handleError(res, "Something went wrong, please try again.", 404);
     }
 
     const token = signToken(user._id);
-    Utils.handleSuccess(res)("Login successfully", { token });
+    Utils.handleSuccess(res, "Login successfully", { token });
   })(req, res, next);
 }
 
 function _logout(req, res, next) {
   console.log("req.user", req.user);
   req.logout();
-  Utils.handleSuccess(res)("Logout successfully");
+  Utils.handleSuccess(res, "Logout successfully");
 }
 
 export default {

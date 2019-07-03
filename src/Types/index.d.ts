@@ -1,4 +1,4 @@
-declare module "@types" {
+declare module "@Types" {
   import { Document, Model, HookSyncCallback, QueryPopulateOptions, ModelPopulateOptions } from "mongoose";
   import { RequestHandler, Response, NextFunction, ErrorRequestHandler, Request } from "express";
   /**
@@ -10,6 +10,7 @@ declare module "@types" {
   export type Request = Request;
   export type NextFunction = NextFunction;
   export type Populate = QueryPopulateOptions | QueryPopulateOptions[];
+  export type Sort = { [key: string]: "asc" | "des" };
   /**
    * Mailer model
    */

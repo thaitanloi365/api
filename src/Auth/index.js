@@ -10,7 +10,7 @@ const router = Router();
 router.use("/", local.router);
 
 /**
- * @type {import("@types").IUserModel}
+ * @type {import("@Types").IUserModel}
  */
 let User;
 
@@ -45,7 +45,7 @@ function isAuthenticated(shouldError = true) {
 
       // Catch UnauthorizedError for better response
       if (err.name === "UnauthorizedError") {
-        return Utils.handleError(res)(err.message, 401);
+        return Utils.handleError(res, err.message, 401);
       }
     })
     .use(function(req, res, next) {
@@ -57,7 +57,7 @@ function isAuthenticated(shouldError = true) {
       User.findById(req.user._id)
         .then(user => {
           if (!user) {
-            return Utils.handleError(res)(Strings.USER_NOT_FOUND, 401);
+            return Utils.handleError(res, Strings.USER_NOT_FOUND, 401);
           }
           req.user = user;
           next();

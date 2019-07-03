@@ -18,6 +18,4 @@ router.post("/forgotPassword", UserController.forgotPassword);
 router.patch("/reset/:token", UserController.resetPassword);
 router.get("/reset/:token", UserController.resetToken);
 
-router.get("/items", Auth.isAuthenticated(), UserController.getAllItem);
-
 export default router;

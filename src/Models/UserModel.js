@@ -7,8 +7,10 @@ const UserSchema = new Schema(
   {
     firstName: { type: String },
     lastName: { type: String },
-    password: { type: String, required: true },
+    username: { type: String },
     email: { type: String, lowercase: true, trim: true, required: true, index: true, unique: true },
+    phone: { type: String, lowercase: true, trim: true, required: true, index: true, unique: true },
+    password: { type: String, required: true },
     salt: String,
     resetPasswordToken: String,
     resetPasswordExpires: Date,
@@ -24,11 +26,35 @@ UserSchema.path("email").validate(function(email) {
   return validator.isEmail(email);
 }, Strings.EMAIL_INVALID);
 
+UserSchema.path("phone").validate(function(phone) {
+  return validator.isMobilePhone(phone, "vi-VN");
+}, Strings.PHONE_INVALID);
+
 UserSchema.path("email").validate(async function(email) {
   const count = await mongoose.model("User").countDocuments({ email, _id: { $ne: this._id } });
   return count == 0;
 }, Strings.EMAIL_ALREADY_EXITS);
 
+UserSchema.path("phone").validate(async function(phone) {
+  const count = await mongoose.model("User").countDocuments({ phone, _id: { $ne: this._id } });
+  return count == 0;
+}, Strings.PHONE_ALREADY_EXITS);
+
+/**
+ * Transform response to client
+ */
+UserSchema.set("toJSON", {
+  virtuals: true,
+  transform: function(doc, ret, options) {
+    delete ret.password;
+    delete ret.salt;
+    delete ret.resetPasswordToken;
+    delete ret.resetPasswordExpires;
+    delete ret.devices;
+    delete ret.__v;
+    delete ret._id;
+  }
+});
 /**
  * Mock
  */
@@ -101,7 +127,7 @@ UserSchema.methods.generateResetToken = function(callback) {
 };
 
 /**
- * @returns {Promise<import("@types").IUserDocument>}
+ * @returns {Promise<import("@Types").IUserDocument>}
  */
 UserSchema.methods.saveResetToken = function() {
   return new Promise((resolve, reject) => {
@@ -155,12 +181,12 @@ UserSchema.methods.encryptPassword = function(password) {
 
 /**
  * Statics
- * @type {import("@types").IUserModel}
+ * @type {import("@Types").IUserModel}
  */
 UserSchema.statics = {};
 
 /**
- * @type {import("@types").IUserModel}
+ * @type {import("@Types").IUserModel}
  */
 const User = model("User", UserSchema);
 

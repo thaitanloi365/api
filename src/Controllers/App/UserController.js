@@ -1,28 +1,20 @@
 import { Utils, Mailer } from "@Utils";
-import { User, Item } from "@Models";
-import Auth from "@Auth";
+import { User } from "@Models";
 import _ from "lodash";
 import Strings from "@Strings";
 
-const WHITELIST_REQUEST_ATTRIBUTES = ["firstName", "lastName", "password", "email"];
+const WHITELIST_REQUEST_ATTRIBUTES = ["firstName", "lastName", "password", "email", "username", "phone"];
 
-const WHITELIST_RESPONSE_ATTRIBUTES = ["firstName", "lastName", "email"];
-
-const ITEM_WHITELIST_ATTRIBUTES = ["price", "description", "title"];
 /**
  * Create a new authenticate user
  *
- * @type {import("@types").RequestHandler}
+ * @type {import("@Types").RequestHandler}
  */
 const create = async (req, res, next) => {
   try {
     const newUser = Utils.sanitizeObject(req.body, WHITELIST_REQUEST_ATTRIBUTES);
-    let user = await User.create(newUser);
-    user = user.toObject();
-    user["token"] = Auth.signToken(user._id);
-    const response = Utils.sanitizeObject(user, WHITELIST_RESPONSE_ATTRIBUTES);
-
-    Utils.handleSuccess(res)(Strings.CREATE_ACCOUNT_SUCCESS, response);
+    const user = await User.create(newUser);
+    Utils.handleSuccess(res, Strings.CREATE_ACCOUNT_SUCCESS, user.toJSON());
   } catch (error) {
     next(error);
   }
@@ -31,13 +23,13 @@ const create = async (req, res, next) => {
 /**
  * Update current user's profile
  *
- * @type {import("@types").RequestHandler}
+ * @type {import("@Types").RequestHandler}
  */
 const update = async (req, res, next) => {
   try {
     let user = await User.findById(req.user._id);
     if (!user) {
-      Utils.handleError(res)(Strings.USER_NOT_FOUND, 404);
+      Utils.handleError(res, Strings.USER_NOT_FOUND, 404);
       return;
     }
 
@@ -45,9 +37,7 @@ const update = async (req, res, next) => {
     Object.assign(user, updateUser);
     await user.save();
 
-    const response = Utils.sanitizeObject(user, WHITELIST_RESPONSE_ATTRIBUTES);
-
-    Utils.handleSuccess(res)(Strings.UPDATE_ACCOUNT_SUCCESS, response);
+    Utils.handleSuccess(res, Strings.UPDATE_ACCOUNT_SUCCESS, user.toJSON());
   } catch (error) {
     next(error);
   }
@@ -56,19 +46,17 @@ const update = async (req, res, next) => {
 /**
  * Get current user's profile
  *
- * @type {import("@types").RequestHandler}
+ * @type {import("@Types").RequestHandler}
  */
 const get = async (req, res, next) => {
   try {
     let user = await User.findById(req.user._id);
     if (!user) {
-      Utils.handleError(res)(Strings.USER_NOT_FOUND, 404);
+      Utils.handleError(res, Strings.USER_NOT_FOUND, 404);
       return;
     }
-    user = user.toObject();
-    const response = Utils.sanitizeObject(user, WHITELIST_RESPONSE_ATTRIBUTES);
 
-    Utils.handleSuccess(res)(Strings.SUCCESS, response);
+    Utils.handleSuccess(res, Strings.SUCCESS, user.toJSON());
   } catch (error) {
     next(error);
   }
@@ -77,17 +65,17 @@ const get = async (req, res, next) => {
 /**
  * Delete a authenticate user permanently
  *
- * @type {import("@types").RequestHandler}
+ * @type {import("@Types").RequestHandler}
  */
 const destroy = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id);
     if (!user) {
-      Utils.handleError(res)(Strings.USER_NOT_FOUND, 404);
+      Utils.handleError(res, Strings.USER_NOT_FOUND, 404);
       return;
     }
     user.remove();
-    Utils.handleSuccess(res)(Strings.DELETE_ACCOUNT_SUCCESS);
+    Utils.handleSuccess(res, Strings.DELETE_ACCOUNT_SUCCESS);
   } catch (error) {
     next(error);
   }
@@ -96,7 +84,7 @@ const destroy = async (req, res, next) => {
 /**
  * Change current user's password
  *
- * @type {import("@types").RequestHandler}
+ * @type {import("@Types").RequestHandler}
  */
 const changePassword = async (req, res, next) => {
   try {
@@ -104,32 +92,32 @@ const changePassword = async (req, res, next) => {
     const newPassword = req.body.newPassword;
 
     if (!oldPassword) {
-      Utils.handleError(res)(Strings.OLD_PASSWORD_REQUIRED, 422);
+      Utils.handleError(res, Strings.OLD_PASSWORD_REQUIRED, 422);
       return;
     }
 
     if (!newPassword) {
-      Utils.handleError(res)(Strings.NEW_PASSWORD_REQUIRED, 422);
+      Utils.handleError(res, Strings.NEW_PASSWORD_REQUIRED, 422);
       return;
     }
 
     let user = await User.findById(req.user._id);
 
     if (!user) {
-      Utils.handleError(res)(Strings.USER_NOT_FOUND, 404);
+      Utils.handleError(res, Strings.USER_NOT_FOUND, 404);
       return;
     }
 
     const isAuthenticated = user.authenticate(oldPassword);
     if (!isAuthenticated) {
-      Utils.handleError(res)(Strings.PASSWORD_INCORRECT);
+      Utils.handleError(res, Strings.PASSWORD_INCORRECT);
       return;
     }
 
     user.password = newPassword;
     await user.save();
 
-    Utils.handleSuccess(res)(Strings.CHANGE_PASSWORD_SUCCESS);
+    Utils.handleSuccess(res, Strings.CHANGE_PASSWORD_SUCCESS);
   } catch (err) {
     next(err);
   }
@@ -138,21 +126,21 @@ const changePassword = async (req, res, next) => {
 /**
  * Creates and sends a password reset token and URL to a user
  *
- * @type {import("@types").RequestHandler}
+ * @type {import("@Types").RequestHandler}
  */
 const forgotPassword = async (req, res, next) => {
   try {
     const email = req.body.email;
 
     if (!email) {
-      Utils.handleError(res)(Strings.EMAIL_REQUIRED);
+      Utils.handleError(res, Strings.EMAIL_REQUIRED);
       return;
     }
 
     const user = await User.findOne({ email });
 
     if (!user) {
-      Utils.handleError(res)(Strings.EMAIL_CAN_NOT_FOUND, 404);
+      Utils.handleError(res, Strings.EMAIL_CAN_NOT_FOUND, 404);
       return;
     }
 
@@ -171,7 +159,7 @@ const forgotPassword = async (req, res, next) => {
 
     await mailer.sendMail(data);
 
-    Utils.handleSuccess(res)(Strings.PASSWORD_RESET_SENT);
+    Utils.handleSuccess(res, Strings.PASSWORD_RESET_SENT);
   } catch (err) {
     next(err);
   }
@@ -180,7 +168,7 @@ const forgotPassword = async (req, res, next) => {
 /**
  * Confirms if the password reset token is valid or not
  *
- * @type {import("@types").RequestHandler}
+ * @type {import("@Types").RequestHandler}
  */
 const resetToken = async (req, res, next) => {
   try {
@@ -192,11 +180,11 @@ const resetToken = async (req, res, next) => {
     });
 
     if (!user) {
-      Utils.handleError(res)(Strings.USER_NOT_FOUND);
+      Utils.handleError(res, Strings.USER_NOT_FOUND);
       return;
     }
 
-    Utils.handleSuccess(res)(Strings.PASSWORD_RESET_INVALID);
+    Utils.handleSuccess(res, Strings.PASSWORD_RESET_INVALID);
   } catch (err) {
     Utils.handleOtherError(next)(err);
   }
@@ -205,7 +193,7 @@ const resetToken = async (req, res, next) => {
 /**
  * Resets a password for a user
  *
- * @type {import("@types").RequestHandler}
+ * @type {import("@Types").RequestHandler}
  */
 const resetPassword = async (req, res, next) => {
   try {
@@ -213,7 +201,7 @@ const resetPassword = async (req, res, next) => {
     const password = req.body.password;
 
     if (!password) {
-      Utils.handleError(res)(Strings.PASSWORD_REQUIRED);
+      Utils.handleError(res, Strings.PASSWORD_REQUIRED);
       return;
     }
 
@@ -223,7 +211,7 @@ const resetPassword = async (req, res, next) => {
     });
 
     if (!user) {
-      Utils.handleError(res)(Strings.USER_NOT_FOUND, 404);
+      Utils.handleError(res, Strings.USER_NOT_FOUND, 404);
       return;
     }
 
@@ -240,7 +228,7 @@ const resetPassword = async (req, res, next) => {
     });
     await mailer.sendMail();
 
-    Utils.handleSuccess(res)(Strings.UPDATE_PASSWORD_SUCCESS);
+    Utils.handleSuccess(res, Strings.UPDATE_PASSWORD_SUCCESS);
   } catch (err) {
     next(err);
   }
@@ -248,33 +236,33 @@ const resetPassword = async (req, res, next) => {
 
 /**
  * Add a device for push notification
- * @type {import("@types").RequestHandler}
+ * @type {import("@Types").RequestHandler}
  */
 const addDevice = async (req, res, next) => {
   try {
     if (!req.body.device) {
-      Utils.handleError(res)(Strings.DEVICE_REQUIRED);
+      Utils.handleError(res, Strings.DEVICE_REQUIRED);
       return;
     }
     if (!req.body.device.token) {
-      Utils.handleError(res)(Strings.DEVICE_TOKEN_REQUIRED);
+      Utils.handleError(res, Strings.DEVICE_TOKEN_REQUIRED);
       return;
     }
 
     if (!req.body.device.platform) {
-      Utils.handleError(res)(Strings.DEVICE_PLATFORM_REQUIRED);
+      Utils.handleError(res, Strings.DEVICE_PLATFORM_REQUIRED);
       return;
     }
 
     if (!req.body.device.uuid) {
-      Utils.handleError(res)(Strings.DEVICE_UUID_TOKEN_REQUIRED);
+      Utils.handleError(res, Strings.DEVICE_UUID_TOKEN_REQUIRED);
       return;
     }
 
     const user = await User.findById(req.user._id);
 
     if (!user) {
-      Utils.handleError(res)(Strings.USER_NOT_FOUND, 404);
+      Utils.handleError(res, Strings.USER_NOT_FOUND, 404);
     }
     const index = user.devices.findIndex(device => device.uuid === req.body.uuid);
 
@@ -286,7 +274,7 @@ const addDevice = async (req, res, next) => {
 
     await user.save();
 
-    Utils.handleSuccess(res)(Strings.DEVICE_ADD_SUCCESS, user);
+    Utils.handleSuccess(res, Strings.DEVICE_ADD_SUCCESS, user);
   } catch (err) {
     next(err);
   }
@@ -294,53 +282,20 @@ const addDevice = async (req, res, next) => {
 
 /**
  * Add a device for push notification
- * @type {import("@types").RequestHandler}
+ * @type {import("@Types").RequestHandler}
  */
 const deleteDevice = async (req, res, next) => {
   try {
     let user = await User.findById(req.user._id);
 
     if (!user) {
-      Utils.handleError(res)(Strings.USER_NOT_FOUND, 404);
+      Utils.handleError(res, Strings.USER_NOT_FOUND, 404);
       return;
     }
 
     user.devices = [];
     await user.save();
-    Utils.handleSuccess(res)(Strings.DEVICE_DELETE_SUCCESS);
-  } catch (err) {
-    next(err);
-  }
-};
-
-/**
- * Add a device for push notification
- * @type {import("@types").RequestHandler}
- */
-const getAllItem = async (req, res, next) => {
-  try {
-    const user = await User.findById(req.user._id);
-
-    if (!user) {
-      return Utils.handleError(res)(Strings.USER_NOT_FOUND, 404);
-    }
-
-    const limit = Number(req.query.limit) || 100;
-    const skip = Number(req.query.skip) || 0;
-    const query = {
-      _createdBy: req.user._id
-    };
-    const sort = req.query.sort || "-createdAt";
-    const select = ITEM_WHITELIST_ATTRIBUTES.join(" ");
-
-    const items = await Item.find(query)
-      .select(select)
-      .skip(skip)
-      .limit(limit)
-      .sort(sort)
-      .lean();
-
-    Utils.handleSuccess(res)(Strings.SUCCESS, items);
+    Utils.handleSuccess(res, Strings.DEVICE_DELETE_SUCCESS);
   } catch (err) {
     next(err);
   }
@@ -356,6 +311,5 @@ export default {
   resetToken,
   resetPassword,
   addDevice,
-  deleteDevice,
-  getAllItem
+  deleteDevice
 };

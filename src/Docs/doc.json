@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "This is a sample server. For this sample, you can use the api key `special-key` to test the authorization     filters.",
+    "description": "This is a test server. For this sample, you can use the `access_token` to pass the authorization filters. It should be applied from `Authorize Button`.",
     "version": "1.0.0",
     "title": "Sample",
     "contact": {
@@ -42,11 +42,20 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Success"
+          "201": {
+            "description": "Success with data will be returned."
           },
           "422": {
-            "description": "Invalid email/password supplied"
+            "description": "Invalid email/password supplied or already exits",
+            "schema": {
+              "$ref": "#/definitions/UnprocessableEntity"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/InternalServerError"
+            }
           }
         }
       }
@@ -55,24 +64,24 @@
       "delete": {
         "tags": ["User"],
         "summary": "Logout",
+        "security": [{ "AccessToken": [] }],
         "description": "Logs out current logged in user session",
         "operationId": "",
         "consumes": ["application/json"],
         "produces": ["application/json"],
-        "parameters": [
-          {
-            "name": "access_token",
-            "in": "header",
-            "required": true,
-            "type": "string"
-          }
-        ],
         "responses": {
           "200": {
             "description": "Success"
           },
           "401": {
-            "description": "No authorization token was found"
+            "description": "No authorization token was found",
+            "schema": {
+              "$ref": "#/definitions/Forbidden"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "$ref": "#/definitions/InternalServerError"
           }
         }
       }
@@ -80,29 +89,42 @@
     "/user": {
       "get": {
         "tags": ["User"],
+        "security": [{ "AccessToken": [] }],
         "summary": "Get user's information",
         "description": "This can only be done by the logged in user.",
         "operationId": "createUser",
         "produces": ["application/json"],
-        "parameters": [
-          {
-            "name": "access_token",
-            "in": "header",
-            "required": true,
-            "type": "string"
-          }
-        ],
         "responses": {
-          "200": {
-            "description": "Success"
+          "201": {
+            "description": "Success with data will be returned"
           },
           "401": {
-            "description": "No authorization token was found"
+            "description": "No authorization token was found",
+            "schema": {
+              "$ref": "#/definitions/Forbidden"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/NotFound"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/UnprocessableEntity"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "$ref": "#/definitions/InternalServerError"
           }
         }
       },
       "post": {
         "tags": ["User"],
+        "security": [{ "AccessToken": [] }],
         "summary": "Create user",
         "description": "This can only be done by the logged in user.",
         "operationId": "createUser",
@@ -119,27 +141,37 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Success"
+          "201": {
+            "description": "Success with data will be returned"
           },
           "401": {
-            "description": "No authorization token was found"
+            "description": "No authorization token was found",
+            "schema": {
+              "$ref": "#/definitions/Forbidden"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/UnprocessableEntity"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/InternalServerError"
+            }
           }
         }
       },
       "patch": {
         "tags": ["User"],
+        "security": [{ "AccessToken": [] }],
         "summary": "Update user",
         "description": "This can only be done by the logged in user.",
         "operationId": "createUser",
         "produces": ["application/json"],
         "parameters": [
-          {
-            "name": "access_token",
-            "in": "header",
-            "required": true,
-            "type": "string"
-          },
           {
             "in": "body",
             "name": "body",
@@ -155,7 +187,28 @@
             "description": "Success"
           },
           "401": {
-            "description": "No authorization token was found"
+            "description": "No authorization token was found",
+            "schema": {
+              "$ref": "#/definitions/Forbidden"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/NotFound"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/UnprocessableEntity"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/InternalServerError"
+            }
           }
         }
       }
@@ -163,20 +216,14 @@
 
     "/items": {
       "post": {
-        "security": ["Bearer"],
         "tags": ["Item"],
+        "security": [{ "AccessToken": [] }],
         "summary": "Create a new item",
         "description": "This can only be done by the logged in user.",
         "operationId": "createItem",
         "produces": ["application/json"],
         "parameters": [
           {
-            "name": "access_token",
-            "in": "header",
-            "required": true,
-            "type": "string"
-          },
-          {
             "in": "body",
             "name": "body",
             "description": "Item",
@@ -189,19 +236,78 @@
         "responses": {
           "200": {
             "description": "Success"
+          },
+          "401": {
+            "description": "No authorization token was found",
+            "schema": {
+              "$ref": "#/definitions/Forbidden"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/UnprocessableEntity"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/InternalServerError"
+            }
           }
         }
       },
+      "get": {
+        "tags": ["Item"],
+        "security": [{ "AccessToken": [] }],
+        "summary": "Get all item",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "createItem",
+        "produces": ["application/json"],
+
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "No authorization token was found",
+            "schema": {
+              "$ref": "#/definitions/Forbidden"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/NotFound"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/UnprocessableEntity"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/InternalServerError"
+            }
+          }
+        }
+      }
+    },
+    "/items/{id}": {
       "patch": {
         "tags": ["Item"],
+        "security": [{ "AccessToken": [] }],
         "summary": "Edit user's item",
         "description": "This can only be done by the logged in user.",
         "operationId": "createUser",
         "produces": ["application/json"],
         "parameters": [
           {
-            "name": "access_token",
-            "in": "header",
+            "name": "id",
+            "in": "path",
             "required": true,
             "type": "string"
           },
@@ -216,51 +322,91 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": "successful operation"
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "No authorization token was found",
+            "schema": {
+              "$ref": "#/definitions/Forbidden"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/NotFound"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/UnprocessableEntity"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/InternalServerError"
+            }
           }
         }
       },
       "delete": {
         "tags": ["Item"],
+        "security": [{ "AccessToken": [] }],
         "summary": "Delete item",
         "description": "This can only be done by the logged in user.",
         "operationId": "deleteItem",
         "produces": ["application/json"],
         "parameters": [
           {
-            "name": "access_token",
-            "in": "header",
+            "name": "id",
+            "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "description": "Item",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/Item"
-            }
           }
         ],
         "responses": {
-          "default": {
-            "description": "successful operation"
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "No authorization token was found",
+            "schema": {
+              "$ref": "#/definitions/Forbidden"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/NotFound"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/UnprocessableEntity"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/InternalServerError"
+            }
           }
         }
       },
       "get": {
-        "security": ["Bearer"],
+        "security": [{ "AccessToken": [] }],
         "tags": ["Item"],
-        "summary": "Get all item",
+        "summary": "Get a item",
         "description": "This can only be done by the logged in user.",
         "operationId": "createItem",
         "produces": ["application/json"],
         "parameters": [
           {
-            "name": "access_token",
-            "in": "header",
+            "name": "id",
+            "in": "path",
             "required": true,
             "type": "string"
           }
@@ -268,29 +414,30 @@
         "responses": {
           "200": {
             "description": "Success"
-          }
-        }
-      }
-    },
-    "/user/items": {
-      "get": {
-        "security": ["Bearer"],
-        "tags": ["User"],
-        "summary": "Get all item",
-        "description": "This can only be done by the logged in user.",
-        "operationId": "createItem",
-        "produces": ["application/json"],
-        "parameters": [
-          {
-            "name": "access_token",
-            "in": "header",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
+          },
+          "401": {
+            "description": "No authorization token was found",
+            "schema": {
+              "$ref": "#/definitions/Forbidden"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/NotFound"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/UnprocessableEntity"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/InternalServerError"
+            }
           }
         }
       }
@@ -298,18 +445,13 @@
     "/changePassword": {
       "patch": {
         "tags": ["User"],
+        "security": [{ "AccessToken": [] }],
         "summary": "Change password",
         "description": "Changes password",
         "operationId": "",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
-          {
-            "name": "access_token",
-            "in": "header",
-            "required": true,
-            "type": "string"
-          },
           {
             "in": "body",
             "name": "body",
@@ -325,10 +467,28 @@
             "description": "Success"
           },
           "401": {
-            "description": "No authorization token was found"
+            "description": "No authorization token was found",
+            "schema": {
+              "$ref": "#/definitions/Forbidden"
+            }
+          },
+          "404": {
+            "description": "User Not Found",
+            "schema": {
+              "$ref": "#/definitions/NotFound"
+            }
           },
           "422": {
-            "description": "Invalid input"
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/UnprocessableEntity"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/InternalServerError"
+            }
           }
         }
       }
@@ -336,6 +496,7 @@
     "/forgotPassword": {
       "post": {
         "tags": ["User"],
+        "security": [{ "AccessToken": [] }],
         "summary": "Forgot password",
         "description": "Forgot password",
         "operationId": "",
@@ -356,10 +517,28 @@
             "description": "Success"
           },
           "401": {
-            "description": "No authorization token was found"
+            "description": "No authorization token was found",
+            "schema": {
+              "$ref": "#/definitions/Forbidden"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/NotFound"
+            }
           },
           "422": {
-            "description": "Invalid input"
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/UnprocessableEntity"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/InternalServerError"
+            }
           }
         }
       }
@@ -367,18 +546,13 @@
     "/device": {
       "post": {
         "tags": ["User"],
+        "security": [{ "AccessToken": [] }],
         "summary": "Add device",
         "description": "Add a new device push notification",
         "operationId": "",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
-          {
-            "name": "access_token",
-            "in": "header",
-            "required": true,
-            "type": "string"
-          },
           {
             "in": "body",
             "name": "body",
@@ -394,49 +568,142 @@
             "description": "Success"
           },
           "401": {
-            "description": "No authorization token was found"
+            "description": "No authorization token was found",
+            "schema": {
+              "$ref": "#/definitions/Forbidden"
+            }
           },
           "422": {
-            "description": "Invalid input"
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/UnprocessableEntity"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/InternalServerError"
+            }
           }
         }
       },
       "delete": {
         "tags": ["User"],
+        "security": [{ "AccessToken": [] }],
         "summary": "Delete device",
         "description": "Delete current device push notification when user logged out.",
         "operationId": "",
         "consumes": ["application/json"],
         "produces": ["application/json"],
-        "parameters": [
-          {
-            "name": "access_token",
-            "in": "header",
-            "required": true,
-            "type": "string"
-          }
-        ],
         "responses": {
           "200": {
             "description": "Success"
           },
           "401": {
-            "description": "No authorization token was found"
+            "description": "No authorization token was found",
+            "schema": {
+              "$ref": "#/definitions/Forbidden"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/NotFound"
+            }
           },
           "422": {
-            "description": "Invalid input"
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/UnprocessableEntity"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/InternalServerError"
+            }
           }
         }
       }
     }
   },
   "securityDefinitions": {
-    "Bearer": {
-      "name": "Authorization",
-      "in": "header"
+    "AccessToken": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "access_token",
+      "description": "The access token for authorize user. It can get once login successfully."
     }
   },
   "definitions": {
+    "NotFound": {
+      "required": ["error", "statusCode"],
+      "properties": {
+        "error": {
+          "description": "Couldn't found ",
+          "type": "string",
+          "example": "Object not found"
+        },
+        "statusCode": {
+          "description": "Assigned StatusCode, is used in order to create a relationship between Error and Response.",
+          "type": "integer",
+          "format": "int64",
+          "example": 404
+        }
+      },
+      "type": "object"
+    },
+    "Forbidden": {
+      "required": ["error", "statusCode"],
+      "properties": {
+        "error": {
+          "description": "Given error, describes the problem.",
+          "type": "string",
+          "example": "No Permission for this action"
+        },
+        "statusCode": {
+          "description": "Assigned StatusCode, is used in order to create a relationship between Error and Response.",
+          "type": "integer",
+          "format": "int64",
+          "example": 401
+        }
+      },
+      "type": "object"
+    },
+    "UnprocessableEntity": {
+      "required": ["error", "statusCode"],
+      "properties": {
+        "error": {
+          "description": "A filed that displays the missing property.",
+          "type": "string",
+          "example": "Email is required"
+        },
+        "statusCode": {
+          "description": "Assigned StatusCode, is used in order to create a relationship between Error and Response.",
+          "type": "integer",
+          "format": "int64",
+          "example": 422
+        }
+      },
+      "type": "object"
+    },
+    "InternalServerError": {
+      "required": ["error", "statusCode"],
+      "properties": {
+        "error": {
+          "description": "Given error (not formatted), describes the problem.",
+          "type": "string",
+          "example": "Internal Server Error"
+        },
+        "statusCode": {
+          "description": "Assigned StatusCode, is used in order to create a relationship between Error and Response.",
+          "type": "integer",
+          "format": "int64",
+          "example": 500
+        }
+      },
+      "type": "object"
+    },
     "LoginForm": {
       "type": "object",
       "properties": {

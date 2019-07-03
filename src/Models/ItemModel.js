@@ -13,14 +13,22 @@ const ItemSchema = new Schema(
   { autoIndex: true, timestamps: true }
 );
 
+ItemSchema.set("toJSON", {
+  virtuals: true,
+  transform: function(doc, ret, options) {
+    delete ret._id;
+    delete ret._createdBy;
+    delete ret.__v;
+  }
+});
 /**
  * Statics
- * @type {import("@types").IItemModel}
+ * @type {import("@Types").IItemModel}
  */
 ItemSchema.statics = {};
 
 /**
- * @type {import("@types").IItemModel}
+ * @type {import("@Types").IItemModel}
  */
 const Item = mongoose.model("Item", ItemSchema);
 
