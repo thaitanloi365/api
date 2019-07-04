@@ -8,9 +8,9 @@ const router = Router();
 
 const upload = multer({
   limits: {
-    fileSize: parseInt(process.env.MAX_SIZE_UPLOAD)
+    fileSize: 2000000
   },
-  dest: "../../uploads"
+  dest: process.env.NODE_ENV === "development" ? "../../uploads" : "/app/uploads"
 });
 
 router.put("/upload", Auth.isAuthenticated(), upload.single("file"), controller.upload);
