@@ -1,6 +1,8 @@
 import aws from "aws-sdk";
 import crypto from "crypto";
 import fs from "fs";
+import { Utils } from "@Utils";
+import Strings from "@Strings";
 
 function upload(req, res, next) {
   let file = req.file;
@@ -13,18 +15,18 @@ function upload(req, res, next) {
 
   // Check if the fileName has a file extension
   // If it doesn't we add a fileExt from the mimetype
-  let pattern = /\.[0-9a-z]+$/i;
-  let foundFileExt = fileName.match(pattern);
+  const pattern = /\.[0-9a-z]+$/i;
+  const foundFileExt = fileName.match(pattern);
   if (!foundFileExt) {
     // Get the file extension from the mimetype
-    let fileExt = file.mimetype.substr(file.mimetype.indexOf("/") + 1);
+    const fileExt = file.mimetype.substr(file.mimetype.indexOf("/") + 1);
 
     // Add to the fileName
     fileName += `.${fileExt}`;
   }
 
   // Create random string to ensure unique filenames
-  let randomBytes = crypto.randomBytes(32).toString("hex");
+  const randomBytes = crypto.randomBytes(32).toString("hex");
 
   /**
    * Create aws file key by combining random string and file name
@@ -34,8 +36,8 @@ function upload(req, res, next) {
   const fileKey = `${process.env.AWS_S3_FILES_KEY_PREFIX}/${randomBytes}/${fileName}`;
 
   // Configure aws
-  `  aws.config.accessKeyId = AWS_ACCESS_KEY_ID;
-  aws.config.secretAccessKey = AWS_SECRET_ACCESS_KEY;`;
+  aws.config.accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+  aws.config.secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 
   // Create our bucket and set params
   let bucket = new aws.S3({
@@ -63,11 +65,17 @@ function upload(req, res, next) {
         url: fileKey
       };
 
+      console.log("**** data", data);
+      const response = {
+        key: data.key,
+        url: data.Location
+      };
       res.status(200).json(fileObject);
+      Utils.handleSuccess(res, Strings.UPLOAD_SUCCESS, response);
     } else {
       // Delete the file
       fs.unlinkSync(file.path);
-      res.status(403).json(err);
+      Utils.handleError(res, err.message, 403);
     }
   });
 }

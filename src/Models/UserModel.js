@@ -7,14 +7,16 @@ const UserSchema = new Schema(
   {
     firstName: { type: String },
     lastName: { type: String },
-    username: { type: String },
+    userName: { type: String },
+    displayName: { type: String },
     email: { type: String, lowercase: true, trim: true, required: true, index: true, unique: true },
     phone: { type: String, lowercase: true, trim: true, required: true, index: true, unique: true },
     password: { type: String, required: true },
     salt: String,
     resetPasswordToken: String,
     resetPasswordExpires: Date,
-    devices: Array
+    devices: Array,
+    roles: Array
   },
   { timestamps: true, autoIndex: true }
 );
@@ -55,24 +57,61 @@ UserSchema.set("toJSON", {
     delete ret._id;
   }
 });
+
 /**
  * Mock
  */
+
+// @ts-ignore
 UserSchema.pre("save", function(next) {
   if (!this || !this.isModified("password")) {
     next();
     return;
   }
-  this.generateSalt()
+  /** @type {import("@Types").IUser} */
+  const user = this;
+
+  user
+    .generateSalt()
     .then(salt => {
-      this.salt = salt;
-      return this.encryptPassword(this.password);
+      user.salt = salt;
+      return user.encryptPassword(user.password);
     })
     .then(encryptedPassword => {
-      this.password = encryptedPassword;
+      user.password = encryptedPassword;
       next();
     })
     .catch(error => next(error));
+});
+
+// @ts-ignore
+UserSchema.pre("save", function(next) {
+  /** @type {import("@Types").IUser} */
+  const user = this;
+
+  // Remove empty strings
+  user.roles = user.roles.filter(n => !!n);
+
+  // Set default role(s) here
+  if (!user.roles.length) {
+    user.roles = ["user"];
+  }
+
+  next();
+});
+
+// @ts-ignore
+UserSchema.pre("save", function(next) {
+  /** @type {import("@Types").IUser} */
+  const user = this;
+
+  if (user.userName) {
+    user.displayName = user.userName;
+  } else if (user.firstName && user.lastName) {
+    user.displayName = `${user.firstName} ${user.lastName}.`;
+  }
+
+  next();
 });
 
 /**
@@ -87,14 +126,6 @@ UserSchema.virtual("items", {
 /**
  * Methods
  */
-
-/**
- * Check email exits
- * @param {string} email
- */
-UserSchema.methods.isEmailExits = function(email) {
-  return email == this.email;
-};
 
 /**
  * Authenticate user
@@ -115,14 +146,17 @@ UserSchema.methods.authenticate = function(password) {
 
 /**
  * Generate reset token for reset password
- * @param {(error: Error, resetToken?: string) => void} callback(err,resetToken)
+ * @return {Promise<string>}
  */
-UserSchema.methods.generateResetToken = function(callback) {
-  crypto.randomBytes(16, (err, salt) => {
-    if (err) {
-      callback(err);
-    }
-    callback(null, salt.toString("hex"));
+UserSchema.methods.generateResetToken = function() {
+  return new Promise((resolve, reject) => {
+    const byteSize = 16;
+    crypto.randomBytes(byteSize, (err, salt) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(salt.toString("base64"));
+    });
   });
 };
 
@@ -131,14 +165,13 @@ UserSchema.methods.generateResetToken = function(callback) {
  */
 UserSchema.methods.saveResetToken = function() {
   return new Promise((resolve, reject) => {
-    this.generateResetToken((err, resetToken) => {
-      if (err) {
-        reject(err);
-      }
-      this.resetPasswordToken = resetToken;
-      this.resetPasswordExpires = Date.now() + 3600000; // 1 hour
-      resolve(this.save());
-    });
+    this.generateResetToken()
+      .then(resetToken => {
+        this.resetPasswordToken = resetToken;
+        this.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+        resolve(this.save());
+      })
+      .catch(err => reject(err));
   });
 };
 

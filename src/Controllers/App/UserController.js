@@ -3,7 +3,7 @@ import { User } from "@Models";
 import _ from "lodash";
 import Strings from "@Strings";
 
-const WHITELIST_REQUEST_ATTRIBUTES = ["firstName", "lastName", "password", "email", "username", "phone"];
+const WHITELIST_REQUEST_ATTRIBUTES = ["firstName", "lastName", "password", "email", "userName", "phone"];
 
 /**
  * Create a new authenticate user

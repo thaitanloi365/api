@@ -28,28 +28,30 @@ declare module "@Types" {
    * User model
    * */
   export interface IUserDocument extends Document {
-    firstName: string;
-    lastName: string;
-    password: string;
-    email: string;
-    salt: string;
-    resetPasswordToken: string;
-    resetPasswordExpires: Date;
-    devices: Array<{ token: string; uuid: string; platform: string }>;
-    items: Array;
+    firstName?: string;
+    lastName?: string;
+    password?: string;
+    email?: string;
+    salt?: string;
+    resetPasswordToken?: string;
+    resetPasswordExpires?: Date;
+    devices?: Array<{ token: string; uuid: string; platform: string }>;
+    items?: Array;
+    roles?: Array<string>;
+    displayName?: string;
+    userName?: string;
   }
 
   export interface IUser extends IUserDocument {
     /**
      * Helper
      */
-    isEmailExits(email: string): boolean;
-    authenticate(password: string): Promise<boolean>;
-    saveResetToken(): void;
-    generateSalt(): Promise<string>;
-    encryptPassword(): Promise<string>;
-    generateResetToken(callback: (error: Error, resetToken?: string) => void);
-    saveResetToken(): Promise<IUserDocument>;
+    authenticate?(password: string): Promise<boolean>;
+    saveResetToken?(): void;
+    generateSalt?(): Promise<string>;
+    encryptPassword?(password: string): Promise<string>;
+    generateResetToken?(): Promise<string>;
+    saveResetToken?(): Promise<IUserDocument>;
   }
 
   export interface IUserModel extends Model<IUser> {
