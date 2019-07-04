@@ -33,7 +33,7 @@ function setup(app) {
    * Validation errors
    */
   app.use((err, req, res, next) => {
-    if (err.name == "ValidationError") {
+    if (err.name === "ValidationError") {
       let errors = [];
       Object.keys(err.errors).forEach(key => {
         const { message = "Internal Error", value = "Unknown" } = err.errors[key];
@@ -43,6 +43,15 @@ function setup(app) {
         console.log("ValidationError: ", JSON.stringify(errors));
       }
       res.status(422).json({ error: errors[0].message, data: null, code: 422 });
+      return;
+    }
+
+    if (err.name === "MulterError") {
+      let message = err.message;
+      if (message === "File too large") {
+        message += ". Maximum is 2MB.";
+      }
+      res.status(422).json({ error: message, data: null, code: 422 });
       return;
     }
     next(err);

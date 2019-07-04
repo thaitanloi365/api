@@ -40,6 +40,7 @@ declare module "@Types" {
     roles?: Array<string>;
     displayName?: string;
     userName?: string;
+    avatar?: string
   }
 
   export interface IUser extends IUserDocument {

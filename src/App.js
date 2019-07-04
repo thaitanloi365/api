@@ -1,4 +1,4 @@
-import "./Enviroment/env";
+import "./Environment/env";
 import express from "express";
 
 import { Database, Middleware, Port, Swagger } from "@Config";

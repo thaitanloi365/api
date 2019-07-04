@@ -1,12 +1,19 @@
 import aws from "aws-sdk";
 import crypto from "crypto";
 import fs from "fs";
-import { Utils } from "@Utils";
+import sharp from "sharp";
 import Strings from "@Strings";
+import { Utils } from "@Utils";
 
-function upload(req, res, next) {
+async function upload(req, res, next) {
   let file = req.file;
+  if (!file) {
+    return Utils.handleError(res, Strings.FILE_REQUIRED);
+  }
 
+  if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+    return Utils.handleError(res, Strings.IMAGE_INVALID, 422);
+  }
   // Clean the file name of special characters, extra spaces, etc.
   let fileName = file.originalname
     .replace(/[^a-zA-Z0-9. ]/g, "")
@@ -27,12 +34,6 @@ function upload(req, res, next) {
 
   // Create random string to ensure unique filenames
   const randomBytes = crypto.randomBytes(32).toString("hex");
-
-  /**
-   * Create aws file key by combining random string and file name
-   * e.g., 73557ec94ea744c5c24bdb03ee114a1ef83ab2dd9bfb20f38999faea14564d19/DarthVader.jpg
-   */
-
   const fileKey = `${process.env.AWS_S3_FILES_KEY_PREFIX}/${randomBytes}/${fileName}`;
 
   // Configure aws
@@ -40,16 +41,26 @@ function upload(req, res, next) {
   aws.config.secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 
   // Create our bucket and set params
-  let bucket = new aws.S3({
+  const bucket = new aws.S3({
     params: { Bucket: process.env.AWS_S3_FILES_BUCKET }
   });
 
-  let params = {
+  const width = req.body.width ? parseInt(req.body.width) : null;
+  const height = req.body.height ? parseInt(req.body.height) : null;
+  const shouldResize = width > 0 && height > 0;
+
+  const buffer = shouldResize
+    ? await sharp(file.path)
+        .resize(width, height)
+        .toBuffer()
+    : await sharp(file.path).toBuffer();
+
+  const params = {
     ACL: "public-read",
     Key: fileKey,
-    Body: fs.createReadStream(file.path),
     Bucket: process.env.AWS_S3_FILES_BUCKET,
-    ContentType: file.mimetype != "" ? file.mimetype : "application/octet-stream"
+    ContentType: file.mimetype != "" ? file.mimetype : "application/octet-stream",
+    Body: buffer
   };
 
   // Upload file to s3
@@ -57,20 +68,11 @@ function upload(req, res, next) {
     if (data) {
       // Delete the file once it's been uploaded to s3
       fs.unlinkSync(file.path);
-
-      let fileObject = {
-        name: fileName,
-        type: file.mimetype,
-        size: file.size,
-        url: fileKey
-      };
-
-      console.log("**** data", data);
       const response = {
         key: data.key,
         url: data.Location
       };
-      res.status(200).json(fileObject);
+
       Utils.handleSuccess(res, Strings.UPLOAD_SUCCESS, response);
     } else {
       // Delete the file
@@ -117,7 +119,6 @@ function s3Signature(req, res, next) {
       return res.end();
     }
     const obj = data;
-    console.log("** obj", obj);
     const returnData = {
       s3Signature: obj,
       url: wholeFilePath

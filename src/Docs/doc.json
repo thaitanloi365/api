@@ -18,6 +18,10 @@
     {
       "name": "Item",
       "description": "Operations about item"
+    },
+    {
+      "name": "Upload",
+      "description": "Operations about upload files"
     }
   ],
   "schemes": ["http", "https"],
@@ -27,7 +31,7 @@
         "tags": ["User"],
         "summary": "Login",
         "description": "Logs user into the system",
-        "operationId": "",
+        "operationId": "login",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
@@ -43,7 +47,10 @@
         ],
         "responses": {
           "201": {
-            "description": "Success with data will be returned."
+            "description": "Success with data will be returned.",
+            "schema": {
+              "$ref": "#/definitions/SuccessWithData"
+            }
           },
           "422": {
             "description": "Invalid email/password supplied or already exits",
@@ -66,12 +73,15 @@
         "summary": "Logout",
         "security": [{ "AccessToken": [] }],
         "description": "Logs out current logged in user session",
-        "operationId": "",
+        "operationId": "logout",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Success"
+            }
           },
           "401": {
             "description": "No authorization token was found",
@@ -92,11 +102,14 @@
         "security": [{ "AccessToken": [] }],
         "summary": "Get user's information",
         "description": "This can only be done by the logged in user.",
-        "operationId": "createUser",
+        "operationId": "user_get",
         "produces": ["application/json"],
         "responses": {
           "201": {
-            "description": "Success with data will be returned"
+            "description": "Success with data will be returned.",
+            "schema": {
+              "$ref": "#/definitions/SuccessWithData"
+            }
           },
           "401": {
             "description": "No authorization token was found",
@@ -127,7 +140,7 @@
         "security": [{ "AccessToken": [] }],
         "summary": "Create user",
         "description": "This can only be done by the logged in user.",
-        "operationId": "createUser",
+        "operationId": "user_post",
         "produces": ["application/json"],
         "parameters": [
           {
@@ -142,7 +155,10 @@
         ],
         "responses": {
           "201": {
-            "description": "Success with data will be returned"
+            "description": "Success with data will be returned.",
+            "schema": {
+              "$ref": "#/definitions/SuccessWithData"
+            }
           },
           "401": {
             "description": "No authorization token was found",
@@ -169,7 +185,7 @@
         "security": [{ "AccessToken": [] }],
         "summary": "Update user",
         "description": "This can only be done by the logged in user.",
-        "operationId": "createUser",
+        "operationId": "user_patch",
         "produces": ["application/json"],
         "parameters": [
           {
@@ -183,8 +199,11 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Success"
+          "201": {
+            "description": "Success with data will be returned.",
+            "schema": {
+              "$ref": "#/definitions/SuccessWithData"
+            }
           },
           "401": {
             "description": "No authorization token was found",
@@ -220,7 +239,7 @@
         "security": [{ "AccessToken": [] }],
         "summary": "Create a new item",
         "description": "This can only be done by the logged in user.",
-        "operationId": "createItem",
+        "operationId": "item_post",
         "produces": ["application/json"],
         "parameters": [
           {
@@ -234,8 +253,11 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Success"
+          "201": {
+            "description": "Success with data will be returned.",
+            "schema": {
+              "$ref": "#/definitions/SuccessWithData"
+            }
           },
           "401": {
             "description": "No authorization token was found",
@@ -262,12 +284,15 @@
         "security": [{ "AccessToken": [] }],
         "summary": "Get all item",
         "description": "This can only be done by the logged in user.",
-        "operationId": "createItem",
+        "operationId": "item_get",
         "produces": ["application/json"],
 
         "responses": {
-          "200": {
-            "description": "Success"
+          "201": {
+            "description": "Success with data will be returned.",
+            "schema": {
+              "$ref": "#/definitions/SuccessWithData"
+            }
           },
           "401": {
             "description": "No authorization token was found",
@@ -302,7 +327,7 @@
         "security": [{ "AccessToken": [] }],
         "summary": "Edit user's item",
         "description": "This can only be done by the logged in user.",
-        "operationId": "createUser",
+        "operationId": "item_id_patch",
         "produces": ["application/json"],
         "parameters": [
           {
@@ -322,8 +347,11 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Success"
+          "201": {
+            "description": "Success with data will be returned.",
+            "schema": {
+              "$ref": "#/definitions/SuccessWithData"
+            }
           },
           "401": {
             "description": "No authorization token was found",
@@ -356,7 +384,7 @@
         "security": [{ "AccessToken": [] }],
         "summary": "Delete item",
         "description": "This can only be done by the logged in user.",
-        "operationId": "deleteItem",
+        "operationId": "item_id_delete",
         "produces": ["application/json"],
         "parameters": [
           {
@@ -368,7 +396,10 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/Success"
+            }
           },
           "401": {
             "description": "No authorization token was found",
@@ -401,7 +432,7 @@
         "tags": ["Item"],
         "summary": "Get a item",
         "description": "This can only be done by the logged in user.",
-        "operationId": "createItem",
+        "operationId": "item_id_get",
         "produces": ["application/json"],
         "parameters": [
           {
@@ -412,8 +443,11 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Success"
+          "201": {
+            "description": "Success with data will be returned.",
+            "schema": {
+              "$ref": "#/definitions/SuccessWithData"
+            }
           },
           "401": {
             "description": "No authorization token was found",
@@ -442,13 +476,141 @@
         }
       }
     },
+    "/upload": {
+      "post": {
+        "tags": ["Upload"],
+        "security": [{ "AccessToken": [] }],
+        "summary": "Upload image",
+        "description": "Upload image to AWS, maximum file size is 2MB",
+        "operationId": "upload_post",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "file",
+            "type": "file",
+            "description": "File to update",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "width",
+            "type": "string",
+            "description": "Desired width of image to resize"
+          },
+          {
+            "in": "formData",
+            "name": "height",
+            "type": "string",
+            "description": "Desired height of image to resize"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success with data will be returned.",
+            "schema": {
+              "$ref": "#/definitions/SuccessWithData"
+            }
+          },
+          "401": {
+            "description": "No authorization token was found",
+            "schema": {
+              "$ref": "#/definitions/Forbidden"
+            }
+          },
+          "404": {
+            "description": "User Not Found",
+            "schema": {
+              "$ref": "#/definitions/NotFound"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/UnprocessableEntity"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/InternalServerError"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Upload"],
+        "security": [{ "AccessToken": [] }],
+        "summary": "Upload image",
+        "description": "Upload image to AWS, maximum file size is 2MB",
+        "operationId": "upload_put",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "file",
+            "type": "file",
+            "description": "File to update",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "width",
+            "type": "string",
+            "description": "Desired width of image",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "height",
+            "type": "string",
+            "description": "Desired height of image",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success with data will be returned.",
+            "schema": {
+              "$ref": "#/definitions/SuccessWithData"
+            }
+          },
+          "401": {
+            "description": "No authorization token was found",
+            "schema": {
+              "$ref": "#/definitions/Forbidden"
+            }
+          },
+          "404": {
+            "description": "User Not Found",
+            "schema": {
+              "$ref": "#/definitions/NotFound"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/UnprocessableEntity"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/InternalServerError"
+            }
+          }
+        }
+      }
+    },
     "/changePassword": {
       "patch": {
         "tags": ["User"],
         "security": [{ "AccessToken": [] }],
         "summary": "Change password",
         "description": "Changes password",
-        "operationId": "",
+        "operationId": "changePassword",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
@@ -464,7 +626,10 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/Success"
+            }
           },
           "401": {
             "description": "No authorization token was found",
@@ -499,7 +664,7 @@
         "security": [{ "AccessToken": [] }],
         "summary": "Forgot password",
         "description": "Forgot password",
-        "operationId": "",
+        "operationId": "forgotPassword",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
@@ -514,7 +679,10 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/Success"
+            }
           },
           "401": {
             "description": "No authorization token was found",
@@ -549,7 +717,7 @@
         "security": [{ "AccessToken": [] }],
         "summary": "Add device",
         "description": "Add a new device push notification",
-        "operationId": "",
+        "operationId": "device_post",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
@@ -564,8 +732,11 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Success"
+          "201": {
+            "description": "Success with data will be returned.",
+            "schema": {
+              "$ref": "#/definitions/SuccessWithData"
+            }
           },
           "401": {
             "description": "No authorization token was found",
@@ -592,12 +763,15 @@
         "security": [{ "AccessToken": [] }],
         "summary": "Delete device",
         "description": "Delete current device push notification when user logged out.",
-        "operationId": "",
+        "operationId": "device_delete",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success.",
+            "schema": {
+              "$ref": "#/definitions/Success"
+            }
           },
           "401": {
             "description": "No authorization token was found",
@@ -636,6 +810,50 @@
     }
   },
   "definitions": {
+    "Success": {
+      "required": ["message", "code", "data"],
+      "properties": {
+        "code": {
+          "description": "Success",
+          "type": "integer",
+          "example": 200
+        },
+        "message": {
+          "description": "Success",
+          "type": "string",
+          "example": "Login Success"
+        },
+        "data": {
+          "description": "Success",
+          "type": "object",
+          "example": null
+        }
+      },
+      "type": "object"
+    },
+    "SuccessWithData": {
+      "required": ["message", "code", "data"],
+      "properties": {
+        "code": {
+          "description": "Success",
+          "type": "integer",
+          "example": 201
+        },
+        "message": {
+          "description": "Success",
+          "type": "string",
+          "example": "Login Success"
+        },
+        "data": {
+          "description": "Success",
+          "type": "object",
+          "example": {
+            "token": "123456789"
+          }
+        }
+      },
+      "type": "object"
+    },
     "NotFound": {
       "required": ["error", "statusCode"],
       "properties": {
@@ -756,6 +974,10 @@
         "phone": {
           "type": "string",
           "example": "+12345678910"
+        },
+        "avatar": {
+          "type": "string",
+          "example": "https://www.facebook.com/images/fb_icon_325x325.png"
         }
       }
     },

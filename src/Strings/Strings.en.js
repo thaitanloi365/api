@@ -1,6 +1,8 @@
 const Strings = {
   INTERNAL_SERVER_ERROR: "Internal Server Error.",
   SUCCESS: "Success.",
+  IMAGE_INVALID: "Invalid image",
+  FILE_REQUIRED: "File is required to upload.",
   UPLOAD_SUCCESS: "Your file has been uploaded successfully.",
   EDIT_ITEM_SUCCESS: "Your item has been updated successfully.",
   ITEM_NOT_FOUND: "Item not found",

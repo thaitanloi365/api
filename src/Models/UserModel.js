@@ -2,6 +2,7 @@ import mongoose, { Schema, model } from "mongoose";
 import crypto from "crypto";
 import validator from "validator";
 import Strings from "@Strings";
+import AWS from "@AWS";
 
 const UserSchema = new Schema(
   {
@@ -12,14 +13,32 @@ const UserSchema = new Schema(
     email: { type: String, lowercase: true, trim: true, required: true, index: true, unique: true },
     phone: { type: String, lowercase: true, trim: true, required: true, index: true, unique: true },
     password: { type: String, required: true },
-    salt: String,
-    resetPasswordToken: String,
+    salt: { type: String },
+    avatar: { type: String },
+    resetPasswordToken: { type: String },
     resetPasswordExpires: Date,
     devices: Array,
     roles: Array
   },
   { timestamps: true, autoIndex: true }
 );
+
+/**
+ * Transform response to client
+ */
+UserSchema.set("toJSON", {
+  virtuals: true,
+  transform: function(doc, ret, options) {
+    delete ret.password;
+    delete ret.salt;
+    delete ret.resetPasswordToken;
+    delete ret.resetPasswordExpires;
+    delete ret.devices;
+    delete ret.__v;
+    delete ret._id;
+    delete ret.roles;
+  }
+});
 
 /**
  * Validators
@@ -41,22 +60,6 @@ UserSchema.path("phone").validate(async function(phone) {
   const count = await mongoose.model("User").countDocuments({ phone, _id: { $ne: this._id } });
   return count == 0;
 }, Strings.PHONE_ALREADY_EXITS);
-
-/**
- * Transform response to client
- */
-UserSchema.set("toJSON", {
-  virtuals: true,
-  transform: function(doc, ret, options) {
-    delete ret.password;
-    delete ret.salt;
-    delete ret.resetPasswordToken;
-    delete ret.resetPasswordExpires;
-    delete ret.devices;
-    delete ret.__v;
-    delete ret._id;
-  }
-});
 
 /**
  * Mock
