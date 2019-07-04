@@ -7,6 +7,7 @@ function setup(app) {
 
   if (process.env.NODE_ENV === "production") {
     swaggerDocument.host = "lapi-test.herokuapp.com";
+    swaggerDocument.schemes = ["https", "http"];
   }
 
   const options = {
