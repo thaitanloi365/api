@@ -1,10 +1,5 @@
-const path = require("path");
-const fs = require("fs");
+const AntdScssThemePlugin = require("antd-scss-theme-plugin");
 
-const lessToJs = require("less-vars-to-js");
-const themeVariables = lessToJs(
-  fs.readFileSync(path.join(__dirname, "./ant-theme-vars.less"), "utf8")
-);
 module.exports = {
   module: {
     rules: [
@@ -15,19 +10,13 @@ module.exports = {
           loader: "babel-loader"
         }
       },
-      {
-        test: /\.less$/,
-        use: [
-          { loader: "style-loader" },
-          { loader: "css-loader" },
-          {
-            loader: "less-loader",
-            options: {
-              modifyVars: themeVariables
-            }
-          }
-        ]
-      }
+      AntdScssThemePlugin.themify({
+        loader: "sass-loader",
+        options: {
+          sourceMap: process.env.NODE_ENV !== "production"
+        }
+      })
     ]
-  }
+  },
+  plugins: [new AntdScssThemePlugin("./theme.scss")]
 };
