@@ -1,0 +1,31 @@
+@import "../../../theme.scss";
+
+.sidebar {
+  text-align: left;
+  .menu {
+    color: white !important;
+    background-color: #002780 !important;
+    border-right-width: 0;
+    .ant-menu-item {
+      &::after {
+        transform: scaleY(0);
+        opacity: 0;
+      }
+    }
+    .ant-menu-item-selected {
+      border-radius: 10px;
+      border-left: 0;
+      color: white;
+      background-color: #16a6dc !important;
+    }
+    .ant-menu-item-active {
+      border-radius: 10px;
+      border-left: 0;
+      color: white !important;
+      background-color: #16a6dc !important;
+    }
+    .ant-menu-item-collapsed {
+      text-align: center;
+    }
+  }
+}
