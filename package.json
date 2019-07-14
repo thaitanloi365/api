@@ -9,11 +9,17 @@
     "build": "yarn run clean && yarn run build-babel ",
     "prod": "NODE_ENV=production  babel-node ./dist/App.js ",
     "start": "yarn build && yarn prod",
-    "dev": "NODE_ENV=development nodemon --harmony ./src/App.js --exec babel-node",
+    "server": "NODE_ENV=development nodemon --harmony ./src/App.js --exec babel-node",
+    "db": "mongod --dbpath ~/data/db",
+    "client": "cd ./src/client && yarn start ",
+    "dev": "concurrently \"yarn db\" \"yarn server\" \"yarn client\"",
     "heroku": "git push heroku master"
   },
   "engines": {
     "node": ">= 10.x"
+  },
+  "resolutions": {
+    "babel-core": "7.0.0-bridge.0"
   },
   "dependencies": {
     "aws-sdk": "^2.480.0",
@@ -40,9 +46,13 @@
     "validator": "^11.0.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
+    "@babel/cli": "^7.5.0",
+    "@babel/core": "^7.5.4",
+    "@babel/node": "^7.5.0",
+    "@babel/preset-env": "^7.5.4",
+    "@babel/register": "^7.4.4",
     "babel-plugin-module-resolver": "^3.2.0",
-    "babel-preset-env": "^1.7.0"
+    "concurrently": "^4.1.1"
   },
   "heroku-run-build-script": true
 }
