@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "antd";
-import Login from "./pages";
+import Login from "./pages/Login";
 
 import "./App.css";
 
