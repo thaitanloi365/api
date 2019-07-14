@@ -1,0 +1,29 @@
+{
+  "allowJs": true,
+  "allowSyntheticDefaultImports": true,
+  "esModuleInterop": true,
+  "moduleResolution": "node",
+  "noEmit": true,
+  "strict": true,
+
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "noUnusedParameters": true,
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    "removeComments": true,
+    "jsx": "react",
+    "alwaysStrict": true,
+    "noUnusedLocals": false,
+    "checkJs": true,
+    "sourceMap": true,
+    "baseUrl": "./src",
+    "paths": {
+      "Assets": ["Assets"],
+      "Pages": ["Pages"],
+      "Services": ["Services"],
+      "Strings": ["Strings"]
+    }
+  },
+  "exclude": ["node_modules", "node_modules/**/d.ts"]
+}

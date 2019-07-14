@@ -2,43 +2,42 @@ import React, { useState } from "react";
 import { Row, Col } from "antd";
 import { Typography } from "antd";
 import { Form, Icon, Input, Button } from "antd";
-import LoginBg from "../../assets/images";
-
+import { Strings } from "Strings";
+import { Api } from "Services";
+import Assets from "Assets";
 import "./Login.scss";
 
 const { Title } = Typography;
 
 function Login() {
-  const [loginUserInfo, setLoginUserInfo] = useState({ username: "" });
-  const [loginPassInfo, setLoginPassInfo] = useState({ password: "" });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleOnChange = (event) => {
+  const handleOnChange = event => {
     let target = event.target;
     let name = target.name;
     let value = target.value;
-    if (name === "username") {
-      setLoginUserInfo({ ...loginUserInfo, username: value });
-    } else if (name === "password") {
-      setLoginPassInfo({ ...loginPassInfo, password: value });
-    }
+    if (name == "email") setEmail(value);
+    else if (name == "password") setPassword(value);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async event => {
     event.preventDefault();
-    console.log(loginUserInfo, loginPassInfo);
+
+    await Api.login(email, password);
   };
 
   return (
     <div className="login">
       <Row>
         <Col md={{ span: 12 }} sm={{ span: 0 }} className="loginLeft">
-          <img src={LoginBg} alt="Login bg" />
+          <img src={Assets.images.loginBg} alt="Login bg" />
         </Col>
         <Col md={{ span: 12 }} sm={{ span: 24 }} className="loginRight">
           <div>
-            <Title className="loginTitle">Welcome back,</Title>
+            <Title className="loginTitle">{Strings.welcomeBack}</Title>
             <Title className="loginTitle" level={4}>
-              please login to your account
+              {Strings.pleaseLogin}
             </Title>
 
             <Form className="loginForm" onSubmit={handleSubmit}>
@@ -47,8 +46,8 @@ function Login() {
                   prefix={
                     <Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />
                   }
-                  placeholder="Username"
-                  name="username"
+                  placeholder="Email"
+                  name="email"
                   onChange={handleOnChange}
                 />
               </Form.Item>
@@ -65,16 +64,16 @@ function Login() {
               </Form.Item>
               <Form.Item className="loginControl">
                 <Button type="primary" htmlType="submit">
-                  Login
+                  {Strings.login}
                 </Button>
                 <a className="loginForgot" href="#">
-                  Forgot password?
+                  {Strings.forgotPassword}
                 </a>
               </Form.Item>
             </Form>
           </div>
           <div className="createAccount">
-            <a href="#">Create Account</a>
+            <a href="#">{Strings.createAccount}</a>
           </div>
         </Col>
       </Row>

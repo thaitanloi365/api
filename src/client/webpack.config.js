@@ -1,6 +1,17 @@
-const AntdScssThemePlugin = require("antd-scss-theme-plugin");
+import AntdScssThemePlugin from "antd-scss-theme-plugin";
+import path from "path";
 
 module.exports = {
+  resolve: {
+    root: path.resolve(__dirname),
+    extensions: ["", ".js", ".jsx"],
+    alias: {
+      Assets: "src/Assets",
+      Pages: "src/Pages",
+      Services: "src/Services",
+      Strings: "src/Strings"
+    }
+  },
   module: {
     rules: [
       {
