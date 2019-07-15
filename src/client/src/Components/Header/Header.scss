@@ -1,0 +1,69 @@
+.headerInfo {
+  display: flex;
+  border-bottom: 1px solid gray;
+  & > div {
+    width: 100%;
+    padding: 15px 20px;
+  }
+  .headerTitle {
+    text-align: left;
+    h1 {
+      margin: 0;
+    }
+  }
+  .headerAccount {
+    display: flex;
+
+    .accountNotify {
+      width: 100%;
+      margin: auto;
+      a {
+        font-size: 20px;
+        color: gray !important;
+        display: inline-block;
+        padding: 8px 14px;
+        background-color: white;
+        border-radius: 50%;
+        box-shadow: 0px 0px 10px;
+        &:hover {
+          background-color: gray;
+          color: white !important;
+        }
+      }
+    }
+    .accountUser {
+      width: 100%;
+      margin: 0;
+      position: relative;
+      .menuHeader {
+        border-radius: 30px;
+        position: absolute;
+        box-shadow: 0 0 10px;
+        .subMenuHeader {
+          text-align: left;
+          ul {
+            border-radius: 30px;
+            width: 80%;
+            margin: 0 auto;
+            padding-bottom: 10px;
+            .ant-menu-item {
+              border-radius: 20px;
+              &::after {
+                transform: scaleY(0);
+                opacity: 0;
+              }
+            }
+            .ant-menu-item-selected {
+              color: white;
+              background-color: #16a6dc !important;
+            }
+            .ant-menu-item-active {
+              color: white !important;
+              background-color: #16a6dc !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}

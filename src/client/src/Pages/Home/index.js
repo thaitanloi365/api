@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Row, Col, Button, Icon } from "antd";
 import Sidebar from "Components/Sidebar";
+import Header from "Components/Header";
 
 import "./Home.scss";
 
@@ -22,6 +23,9 @@ function Home() {
             <Icon type={collapsed ? "menu-unfold" : "menu-fold"} />
           </Button>
           <Sidebar collapsed={collapsed} />
+        </Col>
+        <Col md={{ span: collapsed ? 22 : 21 }} className="homeRight">
+          <Header />
         </Col>
       </Row>
     </div>
