@@ -1,5 +1,6 @@
 import React from "react";
 import { Menu, Icon } from "antd";
+import { Link } from "react-router-dom";
 
 import "./Sidebar.scss";
 
@@ -13,34 +14,44 @@ function Sidebar(props) {
         className="menu"
       >
         <Menu.Item key="1">
-          <span>
-            <Icon type="dashboard" />
-            <span>Dasboard</span>
-          </span>
+          <Link to="/">
+            <span>
+              <Icon type="dashboard" />
+              <span>Dasboard</span>
+            </span>
+          </Link>
         </Menu.Item>
         <Menu.Item key="2">
-          <span>
-            <Icon type="bar-chart" />
-            <span>Analytics</span>
-          </span>
+          <Link to="analytics">
+            <span>
+              <Icon type="bar-chart" />
+              <span>Analytics</span>
+            </span>
+          </Link>
         </Menu.Item>
         <Menu.Item key="3">
-          <span>
-            <Icon type="appstore" />
-            <span>Applications</span>
-          </span>
+          <Link to="/applications">
+            <span>
+              <Icon type="appstore" />
+              <span>Applications</span>
+            </span>
+          </Link>
         </Menu.Item>
         <Menu.Item key="4">
-          <span>
-            <Icon type="team" />
-            <span>Management</span>
-          </span>
+          <Link to="/usermanagement">
+            <span>
+              <Icon type="team" />
+              <span>Management</span>
+            </span>
+          </Link>
         </Menu.Item>
         <Menu.Item key="5">
-          <span>
-            <Icon type="setting" />
-            <span>Setting</span>
-          </span>
+          <Link to="setting">
+            <span>
+              <Icon type="setting" />
+              <span>Setting</span>
+            </span>
+          </Link>
         </Menu.Item>
       </Menu>
     </div>

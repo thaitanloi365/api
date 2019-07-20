@@ -11,6 +11,9 @@
         transform: scaleY(0);
         opacity: 0;
       }
+      a {
+        color: white;
+      }
     }
     .ant-menu-item-selected {
       border-radius: 10px;
