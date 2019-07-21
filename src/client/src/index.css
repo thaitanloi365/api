@@ -7,6 +7,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.home {
+  background-color: #eff0f6;
+}
+
+.homeLeft {
+  height: 100vh;
+  min-height: 600px;
+  padding: 10px;
+  background-color: #002780 !important;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;

@@ -1,30 +1,23 @@
-import React, { useState } from "react";
-import { Row, Col, Button, Icon } from "antd";
+import React from "react";
+import { connect } from "react-redux";
+import { Row, Col } from "antd";
 import Sidebar from "Components/Sidebar";
 import Header from "Components/Header";
 
 import "./Home.scss";
 
-function Home() {
-  const [collapsed, setCollapsed] = useState(false);
-  const toggleCollapsed = () => {
-    setCollapsed(!collapsed);
-    console.log("collapsed", collapsed);
-  };
+const mapStateToProps = (state) => ({
+  collapsed: state.sidebarReducer.collapsed
+});
+
+function Home(props) {
   return (
     <div className="home">
       <Row>
-        <Col md={{ span: collapsed ? 2 : 3 }} className="homeLeft">
-          <Button
-            type="primary"
-            onClick={toggleCollapsed}
-            style={{ marginBottom: 16 }}
-          >
-            <Icon type={collapsed ? "menu-unfold" : "menu-fold"} />
-          </Button>
-          <Sidebar collapsed={collapsed} />
+        <Col md={{ span: props.collapsed ? 2 : 3 }} className="homeLeft">
+          <Sidebar />
         </Col>
-        <Col md={{ span: collapsed ? 22 : 21 }} className="homeRight">
+        <Col md={{ span: props.collapsed ? 22 : 21 }} className="homeRight">
           <Header />
         </Col>
       </Row>
@@ -32,4 +25,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default connect(mapStateToProps)(Home);

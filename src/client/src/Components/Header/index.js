@@ -1,15 +1,21 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Menu, Icon } from "antd";
 
 import "./Header.scss";
 
 const { SubMenu } = Menu;
 
-function Header() {
+const mapStateToProps = (state) => ({
+  headerTitle: state.headerRuducer.headerTitle
+});
+
+function Header(props) {
+  // console.log(props.headerTitle);
   return (
     <div className="headerInfo">
       <div className="headerTitle">
-        <h1>Title</h1>
+        <h1>{props.headerTitle}</h1>
       </div>
       <div className="headerAccount">
         <div className="accountNotify">
@@ -39,4 +45,4 @@ function Header() {
   );
 }
 
-export default Header;
+export default connect(mapStateToProps)(Header);
