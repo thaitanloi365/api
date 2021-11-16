@@ -22,7 +22,7 @@
     "babel-core": "7.0.0-bridge.0"
   },
   "dependencies": {
-    "aws-sdk": "^2.480.0",
+    "aws-sdk": "^2.814.0",
     "bluebird": "^3.5.5",
     "composable-middleware": "^0.3.0",
     "compression": "^1.7.4",
